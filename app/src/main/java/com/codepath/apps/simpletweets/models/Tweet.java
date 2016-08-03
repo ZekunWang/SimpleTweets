@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import org.parceler.Parcel;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -19,6 +20,10 @@ public class Tweet {
     public int favoriteCount;
     public User user;  // embedded User object
     public String createdAt;
+    public ArrayList<String> userMentioned = new ArrayList<>();
+    public String inReplyToStatusId;
+    public boolean favorited;
+    public boolean retweeted;
 
     public Tweet() {
         user = new User();
@@ -48,6 +53,22 @@ public class Tweet {
         return favoriteCount;
     }
 
+    public ArrayList<String> getUserMentioned() {
+        return userMentioned;
+    }
+
+    public String getInReplyToStatusId() {
+        return inReplyToStatusId;
+    }
+
+    public boolean isFavorited() {
+        return favorited;
+    }
+
+    public boolean isRetweeted() {
+        return retweeted;
+    }
+
     // Deserialize JSONObject and build Tweet object
     // Twitter.fromJSONObject("{...}") => <Tweet>
     public static Tweet fromJSONObject(JSONObject jsonObject) {
@@ -60,6 +81,16 @@ public class Tweet {
             tweet.retweetCount = jsonObject.getInt("retweet_count");
             tweet.favoriteCount = jsonObject.getInt("favorite_count");
             tweet.user = User.fromJSONObject(jsonObject.getJSONObject("user"));
+            // Get hashtags
+            JSONArray mentions = jsonObject.getJSONObject("entities").getJSONArray("user_mentions");
+            for (int i = 0; i < mentions.length(); i++) {
+                tweet.userMentioned.add(mentions.getJSONObject(i).getString("screen_name"));
+            }
+            // Get in_reply_to_status_id
+            tweet.inReplyToStatusId = jsonObject.getString("in_reply_to_status_id_str");
+            tweet.favorited = jsonObject.getBoolean("favorited");
+            tweet.retweeted = jsonObject.getBoolean("retweeted");
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -75,7 +106,6 @@ public class Tweet {
         for (int i = 0; i < jsonArray.length(); i++) {
             try {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                Log.i("DEBUG", jsonObject.toString());
                 Tweet tweet = fromJSONObject(jsonObject);
                 if (tweet != null) {
                     tweets.add(tweet);

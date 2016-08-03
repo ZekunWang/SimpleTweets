@@ -9,6 +9,8 @@ class DataBinderMapper {
         switch(layoutId) {
                 case com.codepath.apps.simpletweets.R.layout.activity_details:
                     return com.codepath.apps.simpletweets.databinding.ActivityDetailsBinding.bind(view, bindingComponent);
+                case com.codepath.apps.simpletweets.R.layout.content_details:
+                    return com.codepath.apps.simpletweets.databinding.ContentDetailsBinding.bind(view, bindingComponent);
         }
         return null;
     }
@@ -26,6 +28,12 @@ class DataBinderMapper {
             case -600875192: {
                 if(tag.equals("layout/activity_details_0")) {
                     return com.codepath.apps.simpletweets.R.layout.activity_details;
+                }
+                break;
+            }
+            case -1544296056: {
+                if(tag.equals("layout/content_details_0")) {
+                    return com.codepath.apps.simpletweets.R.layout.content_details;
                 }
                 break;
             }

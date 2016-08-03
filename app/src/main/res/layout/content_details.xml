@@ -11,12 +11,15 @@
     <RelativeLayout
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/colorAccent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/rlReply"
+            android:focusableInTouchMode="true"
             android:padding="@dimen/details_icon_padding"
             android:layout_alignParentBottom="true">
 
@@ -30,8 +33,7 @@
                 android:textColor="@color/item_text_content"
                 android:drawableRight="@drawable/ic_arrow_expand"
                 android:id="@+id/etReply"
-                android:hint='@{"Reply to " + tweet.getUser().getName()}'
-            />
+                android:hint='@{"Reply to " + tweet.getUser().getName()}'/>
 
             <Button
                 android:layout_width="wrap_content"
@@ -69,8 +71,7 @@
             android:background="@drawable/item_view_background"
             android:layout_above="@+id/rlReply"
             tools:showIn="@layout/activity_details"
-            tools:context="com.codepath.apps.simpletweets.activities.DetailsActivity"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            tools:context="com.codepath.apps.simpletweets.activities.DetailsActivity">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -87,7 +88,7 @@
                     android:layout_marginBottom="@dimen/item_img_profile_margin"
                     android:id="@+id/ivProfile"
                     tools:src="@color/colorPrimary"
-                    app:profileImageUrl='@{tweet.getUser().profileImageUrl()}'
+                    app:profileImageUrl='@{tweet.getUser().getProfileImageUrl()}'
                     android:layout_alignParentTop="true"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"/>
@@ -200,6 +201,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:id="@+id/ivReply"
                     android:src="@drawable/ic_reply"/>
 
                 <ImageView
@@ -212,7 +214,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:src="@drawable/ic_heart"/>
+                    android:id="@+id/ivFavorite"
+                    android:src='@{tweet.isFavorited() ? @drawable/ic_heart_lighted : @drawable/ic_heart}' />
 
                 <ImageView
                     android:layout_width="match_parent"

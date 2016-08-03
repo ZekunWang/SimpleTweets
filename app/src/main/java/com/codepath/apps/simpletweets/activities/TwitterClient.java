@@ -10,6 +10,7 @@ import org.scribe.builder.api.Api;
 import org.scribe.builder.api.TwitterApi;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.io.UnsupportedEncodingException;
@@ -58,6 +59,8 @@ public class TwitterClient extends OAuthBaseClient {
         getClient().get(apiUrl, params, handler);
     }
 
+
+    // Get Account Information
     public void getAccount(AsyncHttpResponseHandler handler) {
         String apiUrl = getApiUrl("account/verify_credentials.json");
         getClient().get(apiUrl, handler);
@@ -71,11 +74,35 @@ public class TwitterClient extends OAuthBaseClient {
     public void composeTweet(Tweet tweet, AsyncHttpResponseHandler handler) {
         String apiUrl = getApiUrl("statuses/update.json");
         RequestParams params = new RequestParams();
+
         params.put("status", tweet.getBody());
+        params.put("in_reply_to_status_id", tweet.getInReplyToStatusId());
+
         // Execute the request
         getClient().post(apiUrl, params, handler);
     }
 
+    // Set Favorite For Tweet
+    public void setFavorite(Tweet tweet, AsyncHttpResponseHandler handler) {
+        String apiUrl = getApiUrl("favorites/create.json");
+        RequestParams params = new RequestParams();
+
+        params.put("id", String.valueOf(tweet.getUid()));
+
+        // Execute the request
+        getClient().post(apiUrl, params, handler);
+    }
+
+    // Unset Favorite For Tweet
+    public void unSetFavorite(Tweet tweet, AsyncHttpResponseHandler handler) {
+        String apiUrl = getApiUrl("favorites/destroy.json");
+        RequestParams params = new RequestParams();
+
+        params.put("id", String.valueOf(tweet.getUid()));
+
+        // Execute the request
+        getClient().post(apiUrl, params, handler);
+    }
 
 	/* 1. Define the endpoint URL with getApiUrl and pass a relative path to the endpoint
 	 * 	  i.e getApiUrl("statuses/home_timeline.json");

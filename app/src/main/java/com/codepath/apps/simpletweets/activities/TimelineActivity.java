@@ -45,6 +45,7 @@ public class TimelineActivity extends AppCompatActivity {
     final int TAP_THRESHOLD = 4000;
     long timeStamp;
     public static final int REQUEST_COMPOSE = 20;
+    public static final int REQUEST_DETAILS = 22;
     public static User ACCOUNT;
 
     @Override
@@ -67,6 +68,8 @@ public class TimelineActivity extends AppCompatActivity {
         mLinearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         // Contact layout manager
         rvTweets.setLayoutManager(mLinearLayoutManager);
+        // Disable animation for refreshing item view
+        rvTweets.setItemAnimator(null);
 
         // Get the client
         client = TwitterApplication.getRestClient();    // singleton client
@@ -89,7 +92,8 @@ public class TimelineActivity extends AppCompatActivity {
                     // Go to detail activity
                     Intent intent = new Intent(getApplicationContext(), DetailsActivity.class);
                     intent.putExtra("tweet", Parcels.wrap(tweets.get(position)));
-                    startActivity(intent);
+                    intent.putExtra("position", position);
+                    startActivityForResult(intent, REQUEST_DETAILS);
                 }
             }
         );
@@ -177,15 +181,20 @@ public class TimelineActivity extends AppCompatActivity {
 
     private void composeTweet() {
         Intent intent = new Intent(this, ComposeActivity.class);
+        intent.putExtra("request_code", REQUEST_COMPOSE);
         startActivityForResult(intent, REQUEST_COMPOSE);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // REQUEST_COMPOSE is defined above
-        if (resultCode == RESULT_OK && requestCode == REQUEST_COMPOSE) {
+        if (requestCode == REQUEST_COMPOSE && resultCode == RESULT_OK) {
             Tweet tweet = Parcels.unwrap(data.getParcelableExtra("tweet"));
             postTweet(tweet);
+        } else if (requestCode == REQUEST_DETAILS && resultCode == RESULT_OK) {
+            int position = data.getIntExtra("position", 0);
+            Log.i("DEBUG", "update position: " + position);
+            adapter.notifyItemChanged(position);
         }
     }
 

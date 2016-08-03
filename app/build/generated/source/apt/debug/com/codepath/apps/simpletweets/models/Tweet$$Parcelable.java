@@ -11,7 +11,7 @@ import org.parceler.Generated;
 import org.parceler.ParcelWrapper;
 import org.parceler.ParcelerRuntimeException;
 
-@Generated(value = "org.parceler.ParcelAnnotationProcessor", date = "2016-08-02T18:19-0500")
+@Generated(value = "org.parceler.ParcelAnnotationProcessor", date = "2016-08-03T00:58-0500")
 @SuppressWarnings({
     "unchecked",
     "deprecation"
@@ -44,10 +44,21 @@ public class Tweet$$Parcelable
                 parcel$$1 .writeInt(1);
                 parcel$$1 .writeLong(tweet$$1 .uid);
                 parcel$$1 .writeString(tweet$$1 .createdAt);
+                parcel$$1 .writeString(tweet$$1 .inReplyToStatusId);
+                if (tweet$$1 .userMentioned == null) {
+                    parcel$$1 .writeInt(-1);
+                } else {
+                    parcel$$1 .writeInt(tweet$$1 .userMentioned.size());
+                    for (java.lang.String string$$0 : ((java.util.ArrayList<java.lang.String> ) tweet$$1 .userMentioned)) {
+                        parcel$$1 .writeString(string$$0);
+                    }
+                }
                 parcel$$1 .writeString(tweet$$1 .body);
                 com.codepath.apps.simpletweets.models.User$$Parcelable.write(tweet$$1 .user, parcel$$1, flags$$0, identitySet$$0);
                 parcel$$1 .writeInt(tweet$$1 .retweetCount);
                 parcel$$1 .writeInt(tweet$$1 .favoriteCount);
+                parcel$$1 .writeInt((tweet$$1 .favorited? 1 : 0));
+                parcel$$1 .writeInt((tweet$$1 .retweeted? 1 : 0));
             }
         }
     }
@@ -82,11 +93,25 @@ public class Tweet$$Parcelable
             identityMap$$0 .put(identity$$1, tweet$$5);
             tweet$$5 .uid = parcel$$3 .readLong();
             tweet$$5 .createdAt = parcel$$3 .readString();
+            tweet$$5 .inReplyToStatusId = parcel$$3 .readString();
+            int int$$0 = parcel$$3 .readInt();
+            java.util.ArrayList<java.lang.String> list$$0;
+            if (int$$0 < 0) {
+                list$$0 = null;
+            } else {
+                list$$0 = new java.util.ArrayList<java.lang.String>(int$$0);
+                for (int int$$1 = 0; (int$$1 <int$$0); int$$1 ++) {
+                    list$$0 .add(parcel$$3 .readString());
+                }
+            }
+            tweet$$5 .userMentioned = list$$0;
             tweet$$5 .body = parcel$$3 .readString();
             User user$$0 = com.codepath.apps.simpletweets.models.User$$Parcelable.read(parcel$$3, identityMap$$0);
             tweet$$5 .user = user$$0;
             tweet$$5 .retweetCount = parcel$$3 .readInt();
             tweet$$5 .favoriteCount = parcel$$3 .readInt();
+            tweet$$5 .favorited = (parcel$$3 .readInt() == 1);
+            tweet$$5 .retweeted = (parcel$$3 .readInt() == 1);
             tweet$$3 = tweet$$5;
         }
         return tweet$$3;

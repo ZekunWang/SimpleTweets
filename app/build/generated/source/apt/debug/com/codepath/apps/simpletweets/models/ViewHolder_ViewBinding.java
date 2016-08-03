@@ -23,6 +23,7 @@ public class ViewHolder_ViewBinding<T extends ViewHolder> implements Unbinder {
     target.tvScreenName = finder.findRequiredViewAsType(source, R.id.tvScreenName, "field 'tvScreenName'", TextView.class);
     target.tvRelativeTime = finder.findRequiredViewAsType(source, R.id.tvRelativeTime, "field 'tvRelativeTime'", TextView.class);
     target.tvBody = finder.findRequiredViewAsType(source, R.id.tvBody, "field 'tvBody'", TextView.class);
+    target.ivFavorite = finder.findRequiredViewAsType(source, R.id.ivFavorite, "field 'ivFavorite'", ImageView.class);
   }
 
   @Override
@@ -37,6 +38,7 @@ public class ViewHolder_ViewBinding<T extends ViewHolder> implements Unbinder {
     target.tvScreenName = null;
     target.tvRelativeTime = null;
     target.tvBody = null;
+    target.ivFavorite = null;
 
     this.target = null;
   }

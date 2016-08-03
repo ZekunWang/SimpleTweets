@@ -22,6 +22,7 @@ import com.codepath.apps.simpletweets.R;
 import com.codepath.apps.simpletweets.models.Tweet;
 import com.codepath.apps.simpletweets.models.User;
 
+import org.json.JSONArray;
 import org.parceler.Parcels;
 
 import butterknife.BindView;
@@ -33,6 +34,8 @@ public class ComposeActivity extends AppCompatActivity {
     @BindView(R.id.etContent) EditText etContent;
     @BindView(R.id.btnCompose) Button btnCompose;
     @BindView(R.id.tvAvailableChars) TextView tvAvailableChars;
+    Tweet tweet;
+    int requestCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +45,32 @@ public class ComposeActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
 
+        requestCode = getIntent().getIntExtra("request_code", 0);
+
+        // Put hashtags before input
+        if (requestCode == DetailsActivity.REQUEST_REPLY) {
+            tweet = Parcels.unwrap(getIntent().getParcelableExtra("tweet"));
+            // @ status user screen name
+            StringBuilder sb = new StringBuilder("@")
+                .append(tweet.getUser().getScreenName())
+                .append(' ');
+            // @ all mentioned user
+            for (String screenName : tweet.getUserMentioned()) {
+                if (!screenName.equals(tweet.getUser().getScreenName())) {
+                    sb.append("@").append(screenName).append(' ');
+                }
+            }
+
+            etContent.setText(sb.toString());
+
+            // Move cursor to end of reply EditText
+            etContent.setSelection(sb.length());
+
+            // Set initial remaining char count
+            tvAvailableChars.setText(String.valueOf(140 - etContent.length()));
+        }
+
+        // Listen to compost characters
         etContent.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -85,13 +114,20 @@ public class ComposeActivity extends AppCompatActivity {
 
     // Submit new Tweet
     public void onSubmit(View v) {
-        Tweet tweet = new Tweet();
-        tweet.body = etContent.getText().toString();
-        tweet.user = TimelineActivity.ACCOUNT;
+        if (etContent.getText().length() <= 0) {    // No input
+            finish();
+        }
+
+        Tweet newTweet = new Tweet();
+        newTweet.body = etContent.getText().toString();
+        newTweet.user = TimelineActivity.ACCOUNT;
+        if (tweet != null && requestCode == DetailsActivity.REQUEST_REPLY) {
+            newTweet.inReplyToStatusId = String.valueOf(tweet.getUid());
+        }
         // Prepare data intent
         Intent data = new Intent();
         // Pass relevant data back as a result
-        data.putExtra("tweet", Parcels.wrap(tweet));
+        data.putExtra("tweet", Parcels.wrap(newTweet));
         // Activity finished ok, return the data
         setResult(RESULT_OK, data); // set result code and bundle data for response
         finish(); // closes the activity, pass data to parent

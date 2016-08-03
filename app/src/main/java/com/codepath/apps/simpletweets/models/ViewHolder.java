@@ -19,6 +19,7 @@ public class ViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.tvScreenName) TextView tvScreenName;
     @BindView(R.id.tvRelativeTime) TextView tvRelativeTime;
     @BindView(R.id.tvBody) TextView tvBody;
+    @BindView(R.id.ivFavorite) ImageView ivFavorite;
 
     public ViewHolder(View view) {
         // Stores the itemView in a public final member variable that can be used
@@ -53,5 +54,9 @@ public class ViewHolder extends RecyclerView.ViewHolder {
 
     public TextView getTvFavoriteCount() {
         return tvFavoriteCount;
+    }
+
+    public ImageView getIvFavorite() {
+        return ivFavorite;
     }
 }

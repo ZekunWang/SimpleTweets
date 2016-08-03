@@ -26,7 +26,7 @@ The following **optional** features are implemented:
 * [x] User can **pull down to refresh tweets timeline**
 * [ ] User can **open the twitter app offline and see last loaded tweets**. Persisted in SQLite tweets are refreshed on every application launch. While "live data" is displayed when app can get it from Twitter API, it is also saved for use in offline mode.
 * [x] User can tap a tweet to **open a detailed tweet view**
-* [ ] User can **select "reply" from detail view to respond to a tweet**
+* [x] User can **select "reply" from detail view to respond to a tweet**
 * [x] Improve the user interface and theme the app to feel "twitter branded"
 
 The following **bonus** features are implemented:
@@ -46,6 +46,8 @@ The following **additional** features are implemented:
 
 * [x] Double tap on Toolbar to fast scroll to top
 * [x] Floating action bar reacts to scroll
+* [x] Reply button reacts to reply input
+* [x] Fast reply can expand and jump to reply page
 
 ## Video Walkthrough
 
@@ -57,7 +59,12 @@ GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 ## Notes
 
-Describe any challenges encountered while building the app.
+Describe any challenges encountered while building the app:
+
+1. Use RecyclerView and ViewHolder
+2. Implement Spans and links among Tweet content
+3. Implement Floating Action Bar and react to scrolling
+4. Utilize data binding
 
 ## Open-source libraries used
 

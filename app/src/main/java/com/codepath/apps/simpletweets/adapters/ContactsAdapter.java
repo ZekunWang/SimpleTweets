@@ -85,6 +85,7 @@
             vh.getTvBody().setText(tweet.getBody());
             vh.getTvRetweetCount().setText("" + tweet.getRetweetCount());
             vh.getTvFavoriteCount().setText("" + tweet.getFavoriteCount());
+            vh.getIvFavorite().setImageResource(tweet.isFavorited() ? R.drawable.ic_heart_lighted : R.drawable.ic_heart);
 
             // Search for @ and #
             int color = ContextCompat.getColor(context,R.color.colorPrimary);
