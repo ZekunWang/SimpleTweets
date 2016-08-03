@@ -26,7 +26,7 @@ public class ActivityDetailsBinding extends android.databinding.ViewDataBinding 
     // Inverse Binding Event Handlers
 
     public ActivityDetailsBinding(android.databinding.DataBindingComponent bindingComponent, View root) {
-        super(bindingComponent, root, 0);
+        super(bindingComponent, root, 1);
         final Object[] bindings = mapBindings(bindingComponent, root, 3, sIncludes, sViewsWithIds);
         this.mboundView0 = (com.codepath.apps.simpletweets.databinding.ContentDetailsBinding) bindings[1];
         this.mboundView01 = (android.support.design.widget.CoordinatorLayout) bindings[0];
@@ -69,6 +69,7 @@ public class ActivityDetailsBinding extends android.databinding.ViewDataBinding 
     }
 
     public void setTweet(com.codepath.apps.simpletweets.models.Tweet tweet) {
+        updateRegistration(0, tweet);
         this.mTweet = tweet;
         synchronized(this) {
             mDirtyFlags |= 0x1L;
@@ -83,6 +84,19 @@ public class ActivityDetailsBinding extends android.databinding.ViewDataBinding 
     @Override
     protected boolean onFieldChange(int localFieldId, Object object, int fieldId) {
         switch (localFieldId) {
+            case 0 :
+                return onChangeTweet((com.codepath.apps.simpletweets.models.Tweet) object, fieldId);
+        }
+        return false;
+    }
+    private boolean onChangeTweet(com.codepath.apps.simpletweets.models.Tweet tweet, int fieldId) {
+        switch (fieldId) {
+            case BR._all: {
+                synchronized(this) {
+                        mDirtyFlags |= 0x1L;
+                }
+                return true;
+            }
         }
         return false;
     }

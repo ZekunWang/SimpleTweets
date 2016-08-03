@@ -225,8 +225,8 @@ public class DetailsActivity extends AppCompatActivity {
                         public void onSuccess(int statusCode, Header[] headers, JSONObject jsonObject) {
                             Tweet newTweet = Tweet.fromJSONObject(jsonObject);
                             if (newTweet != null) {
-                                tweet.favorited = false;
-                                ivFavorite.setImageResource(R.drawable.ic_heart);
+                                tweet.setFavorited(false);
+                                //ivFavorite.setImageResource(R.drawable.ic_heart);
                             }
                         }
 
@@ -244,8 +244,8 @@ public class DetailsActivity extends AppCompatActivity {
                         public void onSuccess(int statusCode, Header[] headers, JSONObject jsonObject) {
                             Tweet newTweet = Tweet.fromJSONObject(jsonObject);
                             if (newTweet != null) {
-                                tweet.favorited = true;
-                                ivFavorite.setImageResource(R.drawable.ic_heart_lighted);
+                                tweet.setFavorited(true);
+                                //ivFavorite.setImageResource(R.drawable.ic_heart_lighted);
                             }
                         }
 
@@ -332,6 +332,8 @@ public class DetailsActivity extends AppCompatActivity {
         Intent data = new Intent();
         // Pass relevant data back as a result
         data.putExtra("position", position);
+        // Pass relevant data back as a result
+        data.putExtra("tweet", Parcels.wrap(tweet));
         // Activity finished ok, return the data
         setResult(RESULT_OK, data); // set result code and bundle data for response
         finish(); // closes the activity, pass data to parent

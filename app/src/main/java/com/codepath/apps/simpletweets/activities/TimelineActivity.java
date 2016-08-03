@@ -68,8 +68,6 @@ public class TimelineActivity extends AppCompatActivity {
         mLinearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         // Contact layout manager
         rvTweets.setLayoutManager(mLinearLayoutManager);
-        // Disable animation for refreshing item view
-        rvTweets.setItemAnimator(null);
 
         // Get the client
         client = TwitterApplication.getRestClient();    // singleton client
@@ -193,7 +191,8 @@ public class TimelineActivity extends AppCompatActivity {
             postTweet(tweet);
         } else if (requestCode == REQUEST_DETAILS && resultCode == RESULT_OK) {
             int position = data.getIntExtra("position", 0);
-            Log.i("DEBUG", "update position: " + position);
+            Tweet updatedTweet = Parcels.unwrap(data.getParcelableExtra("tweet"));
+            tweets.set(position, updatedTweet);
             adapter.notifyItemChanged(position);
         }
     }

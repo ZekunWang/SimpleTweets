@@ -1,11 +1,15 @@
 package com.codepath.apps.simpletweets.models;
 
 
+import com.codepath.apps.simpletweets.BR;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcel;
 
+import android.databinding.BaseObservable;
+import android.databinding.Bindable;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -13,7 +17,7 @@ import java.util.ArrayList;
 
 // Parse JSON, Pass data, Encapsulate state logic
 @Parcel
-public class Tweet {
+public class Tweet extends BaseObservable {
     public String body;
     public long uid;
     public int retweetCount;
@@ -49,6 +53,7 @@ public class Tweet {
         return retweetCount;
     }
 
+    @Bindable
     public int getFavoriteCount() {
         return favoriteCount;
     }
@@ -61,12 +66,24 @@ public class Tweet {
         return inReplyToStatusId;
     }
 
+    @Bindable
     public boolean isFavorited() {
         return favorited;
     }
 
     public boolean isRetweeted() {
         return retweeted;
+    }
+
+    public void setFavorited(boolean favorited) {
+        this.favorited = favorited;
+        if (favorited) {
+            favoriteCount++;
+        } else {
+            favoriteCount--;
+        }
+        notifyPropertyChanged(BR.favoriteCount);
+        notifyPropertyChanged(BR.favorited);
     }
 
     // Deserialize JSONObject and build Tweet object

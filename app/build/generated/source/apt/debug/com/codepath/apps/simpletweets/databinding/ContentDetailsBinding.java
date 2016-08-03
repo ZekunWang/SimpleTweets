@@ -40,7 +40,7 @@ public class ContentDetailsBinding extends android.databinding.ViewDataBinding  
     // Inverse Binding Event Handlers
 
     public ContentDetailsBinding(android.databinding.DataBindingComponent bindingComponent, View root) {
-        super(bindingComponent, root, 0);
+        super(bindingComponent, root, 1);
         final Object[] bindings = mapBindings(bindingComponent, root, 15, sIncludes, sViewsWithIds);
         this.btnCompose = (android.widget.Button) bindings[9];
         this.etReply = (android.widget.EditText) bindings[1];
@@ -98,6 +98,7 @@ public class ContentDetailsBinding extends android.databinding.ViewDataBinding  
     }
 
     public void setTweet(com.codepath.apps.simpletweets.models.Tweet tweet) {
+        updateRegistration(0, tweet);
         this.mTweet = tweet;
         synchronized(this) {
             mDirtyFlags |= 0x1L;
@@ -112,6 +113,19 @@ public class ContentDetailsBinding extends android.databinding.ViewDataBinding  
     @Override
     protected boolean onFieldChange(int localFieldId, Object object, int fieldId) {
         switch (localFieldId) {
+            case 0 :
+                return onChangeTweet((com.codepath.apps.simpletweets.models.Tweet) object, fieldId);
+        }
+        return false;
+    }
+    private boolean onChangeTweet(com.codepath.apps.simpletweets.models.Tweet tweet, int fieldId) {
+        switch (fieldId) {
+            case BR._all: {
+                synchronized(this) {
+                        mDirtyFlags |= 0x1L;
+                }
+                return true;
+            }
         }
         return false;
     }

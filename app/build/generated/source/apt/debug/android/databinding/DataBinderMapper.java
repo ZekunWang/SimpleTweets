@@ -49,6 +49,8 @@ class DataBinderMapper {
     private static class InnerBrLookup {
         static String[] sKeys = new String[]{
             "_all"
+            ,"favoriteCount"
+            ,"favorited"
             ,"tweet"};
     }
 }
