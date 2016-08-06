@@ -87,7 +87,7 @@ public class TwitterClient extends OAuthBaseClient {
         String apiUrl = getApiUrl("favorites/create.json");
         RequestParams params = new RequestParams();
 
-        params.put("id", String.valueOf(tweet.getUid()));
+        params.put("id", String.valueOf(tweet.getTid()));
 
         // Execute the request
         getClient().post(apiUrl, params, handler);
@@ -98,7 +98,7 @@ public class TwitterClient extends OAuthBaseClient {
         String apiUrl = getApiUrl("favorites/destroy.json");
         RequestParams params = new RequestParams();
 
-        params.put("id", String.valueOf(tweet.getUid()));
+        params.put("id", String.valueOf(tweet.getTid()));
 
         // Execute the request
         getClient().post(apiUrl, params, handler);

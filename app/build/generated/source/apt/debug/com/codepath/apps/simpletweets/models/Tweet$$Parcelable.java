@@ -1,8 +1,10 @@
 
 package com.codepath.apps.simpletweets.models;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import android.os.Parcelable;
@@ -11,7 +13,7 @@ import org.parceler.Generated;
 import org.parceler.ParcelWrapper;
 import org.parceler.ParcelerRuntimeException;
 
-@Generated(value = "org.parceler.ParcelAnnotationProcessor", date = "2016-08-03T08:29-0500")
+@Generated(value = "org.parceler.ParcelAnnotationProcessor", date = "2016-08-05T22:51-0500")
 @SuppressWarnings({
     "unchecked",
     "deprecation"
@@ -22,7 +24,7 @@ public class Tweet$$Parcelable
 
     private com.codepath.apps.simpletweets.models.Tweet tweet$$0;
     @SuppressWarnings("UnusedDeclaration")
-    public final static Tweet$$Parcelable.Creator$$0 CREATOR = new Tweet$$Parcelable.Creator$$0();
+    public final static Tweet$$Parcelable.Creator$$1 CREATOR = new Tweet$$Parcelable.Creator$$1();
 
     public Tweet$$Parcelable(com.codepath.apps.simpletweets.models.Tweet tweet$$2) {
         tweet$$0 = tweet$$2;
@@ -42,19 +44,27 @@ public class Tweet$$Parcelable
                 parcel$$1 .writeInt(-1);
             } else {
                 parcel$$1 .writeInt(1);
-                parcel$$1 .writeLong(tweet$$1 .uid);
                 parcel$$1 .writeString(tweet$$1 .createdAt);
                 parcel$$1 .writeString(tweet$$1 .inReplyToStatusId);
-                if (tweet$$1 .userMentioned == null) {
+                if (tweet$$1 .media == null) {
                     parcel$$1 .writeInt(-1);
                 } else {
-                    parcel$$1 .writeInt(tweet$$1 .userMentioned.size());
-                    for (java.lang.String string$$0 : ((java.util.ArrayList<java.lang.String> ) tweet$$1 .userMentioned)) {
-                        parcel$$1 .writeString(string$$0);
+                    parcel$$1 .writeInt(tweet$$1 .media.size());
+                    for (com.codepath.apps.simpletweets.models.Medium medium$$0 : ((List<com.codepath.apps.simpletweets.models.Medium> ) tweet$$1 .media)) {
+                        com.codepath.apps.simpletweets.models.Medium$$Parcelable.write(medium$$0, parcel$$1, flags$$0, identitySet$$0);
                     }
                 }
                 parcel$$1 .writeString(tweet$$1 .body);
+                if (tweet$$1 .userMentions == null) {
+                    parcel$$1 .writeInt(-1);
+                } else {
+                    parcel$$1 .writeInt(tweet$$1 .userMentions.length);
+                    for (java.lang.String string$$0 : tweet$$1 .userMentions) {
+                        parcel$$1 .writeString(string$$0);
+                    }
+                }
                 com.codepath.apps.simpletweets.models.User$$Parcelable.write(tweet$$1 .user, parcel$$1, flags$$0, identitySet$$0);
+                parcel$$1 .writeLong(tweet$$1 .tid);
                 parcel$$1 .writeInt(tweet$$1 .retweetCount);
                 parcel$$1 .writeInt(tweet$$1 .favoriteCount);
                 parcel$$1 .writeInt((tweet$$1 .favorited? 1 : 0));
@@ -91,23 +101,35 @@ public class Tweet$$Parcelable
             identityMap$$0 .put(identity$$1, null);
             tweet$$5 = new com.codepath.apps.simpletweets.models.Tweet();
             identityMap$$0 .put(identity$$1, tweet$$5);
-            tweet$$5 .uid = parcel$$3 .readLong();
             tweet$$5 .createdAt = parcel$$3 .readString();
             tweet$$5 .inReplyToStatusId = parcel$$3 .readString();
             int int$$0 = parcel$$3 .readInt();
-            java.util.ArrayList<java.lang.String> list$$0;
+            ArrayList<com.codepath.apps.simpletweets.models.Medium> list$$0;
             if (int$$0 < 0) {
                 list$$0 = null;
             } else {
-                list$$0 = new java.util.ArrayList<java.lang.String>(int$$0);
+                list$$0 = new ArrayList<com.codepath.apps.simpletweets.models.Medium>(int$$0);
                 for (int int$$1 = 0; (int$$1 <int$$0); int$$1 ++) {
-                    list$$0 .add(parcel$$3 .readString());
+                    com.codepath.apps.simpletweets.models.Medium medium$$1 = com.codepath.apps.simpletweets.models.Medium$$Parcelable.read(parcel$$3, identityMap$$0);
+                    list$$0 .add(medium$$1);
                 }
             }
-            tweet$$5 .userMentioned = list$$0;
+            tweet$$5 .media = list$$0;
             tweet$$5 .body = parcel$$3 .readString();
+            int int$$2 = parcel$$3 .readInt();
+            java.lang.String[] string$$1;
+            if (int$$2 < 0) {
+                string$$1 = null;
+            } else {
+                string$$1 = new java.lang.String[int$$2 ] ;
+                for (int int$$3 = 0; (int$$3 <int$$2); int$$3 ++) {
+                    string$$1 [int$$3 ] = parcel$$3 .readString();
+                }
+            }
+            tweet$$5 .userMentions = string$$1;
             User user$$0 = com.codepath.apps.simpletweets.models.User$$Parcelable.read(parcel$$3, identityMap$$0);
             tweet$$5 .user = user$$0;
+            tweet$$5 .tid = parcel$$3 .readLong();
             tweet$$5 .retweetCount = parcel$$3 .readInt();
             tweet$$5 .favoriteCount = parcel$$3 .readInt();
             tweet$$5 .favorited = (parcel$$3 .readInt() == 1);
@@ -117,7 +139,7 @@ public class Tweet$$Parcelable
         return tweet$$3;
     }
 
-    public final static class Creator$$0
+    public final static class Creator$$1
         implements Creator<Tweet$$Parcelable>
     {
 

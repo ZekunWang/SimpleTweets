@@ -1,44 +1,54 @@
 package com.codepath.apps.simpletweets.models;
 
-
-import com.codepath.apps.simpletweets.BR;
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcel;
 
-import android.databinding.BaseObservable;
-import android.databinding.Bindable;
-import android.util.Log;
-import android.widget.Toast;
-
 import java.util.ArrayList;
+import java.util.List;
 
 // Parse JSON, Pass data, Encapsulate state logic
-@Parcel
-public class Tweet extends BaseObservable {
+@Table(name = "tweets")
+@Parcel(analyze={Tweet.class})   // add Parceler to ignore Model
+public class Tweet extends Model {
+
+    @Column(name = "body")
     public String body;
-    public long uid;
+    @Column(name = "tid", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
+    public long tid;
+    @Column(name = "retweet_count")
     public int retweetCount;
+    @Column(name = "favorite_count")
     public int favoriteCount;
+    @Column(name = "user", onUpdate = Column.ForeignKeyAction.CASCADE, onDelete = Column.ForeignKeyAction.CASCADE)
     public User user;  // embedded User object
+    @Column(name = "created_at")
     public String createdAt;
-    public ArrayList<String> userMentioned = new ArrayList<>();
+    @Column(name = "user_mentions")
+    public String[] userMentions;
+    public List<Medium> media;
+    @Column(name = "in_reply_to_status_id")
     public String inReplyToStatusId;
+    @Column(name = "favorited")
     public boolean favorited;
+    @Column(name = "retweeted")
     public boolean retweeted;
 
     public Tweet() {
-        user = new User();
+        super();
     }
 
     public String getBody() {
         return body;
     }
 
-    public long getUid() {
-        return uid;
+    public long getTid() {
+        return tid;
     }
 
     public String getCreatedAt() {
@@ -53,20 +63,18 @@ public class Tweet extends BaseObservable {
         return retweetCount;
     }
 
-    @Bindable
     public int getFavoriteCount() {
         return favoriteCount;
     }
 
-    public ArrayList<String> getUserMentioned() {
-        return userMentioned;
+    public String[] getUserMentions() {
+        return userMentions;
     }
 
     public String getInReplyToStatusId() {
         return inReplyToStatusId;
     }
 
-    @Bindable
     public boolean isFavorited() {
         return favorited;
     }
@@ -82,8 +90,10 @@ public class Tweet extends BaseObservable {
         } else {
             favoriteCount--;
         }
-        notifyPropertyChanged(BR.favoriteCount);
-        notifyPropertyChanged(BR.favorited);
+    }
+
+    public List<Medium> getMedia() {
+        return media;
     }
 
     // Deserialize JSONObject and build Tweet object
@@ -93,21 +103,35 @@ public class Tweet extends BaseObservable {
 
         try {
             tweet.body = jsonObject.getString("text");
-            tweet.uid = jsonObject.getLong("id");
+            tweet.tid = jsonObject.getLong("id");
             tweet.createdAt = jsonObject.getString("created_at");
             tweet.retweetCount = jsonObject.getInt("retweet_count");
             tweet.favoriteCount = jsonObject.getInt("favorite_count");
-            tweet.user = User.fromJSONObject(jsonObject.getJSONObject("user"));
+            tweet.user = User.findOrCreateFromJson(jsonObject.getJSONObject("user"));
             // Get hashtags
             JSONArray mentions = jsonObject.getJSONObject("entities").getJSONArray("user_mentions");
+            tweet.userMentions = new String[mentions.length()];
             for (int i = 0; i < mentions.length(); i++) {
-                tweet.userMentioned.add(mentions.getJSONObject(i).getString("screen_name"));
+                tweet.userMentions[i] = mentions.getJSONObject(i).getString("screen_name");
             }
             // Get in_reply_to_status_id
             tweet.inReplyToStatusId = jsonObject.getString("in_reply_to_status_id_str");
             tweet.favorited = jsonObject.getBoolean("favorited");
             tweet.retweeted = jsonObject.getBoolean("retweeted");
 
+            // Save Tweet before saving Mdeium
+            tweet.save();
+
+            // Get media
+            if (jsonObject.has("extended_entities")) {
+                JSONObject extendedEntities = jsonObject.getJSONObject("extended_entities");
+                if (extendedEntities != null) {
+                    JSONArray media = extendedEntities.getJSONArray("media");
+                    if (media != null) {
+                        tweet.media = Medium.fromJSONArray(media, tweet);
+                    }
+                }
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }

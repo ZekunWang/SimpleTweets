@@ -16,7 +16,14 @@
     <dimen name="item_icon_text_width">48dp</dimen>
     <dimen name="item_icon_text_height">24dp</dimen>
 
+    <dimen name="button_height">36dp</dimen>
+    <dimen name="button_width">60dp</dimen>
+
+    <dimen name="icon_size">40dp</dimen>
+
     <dimen name="details_icon_height">40dp</dimen>
     <dimen name="details_icon_padding">8dp</dimen>
+
+    <dimen name="bootton_login_size">22sp</dimen>
 
 </resources>

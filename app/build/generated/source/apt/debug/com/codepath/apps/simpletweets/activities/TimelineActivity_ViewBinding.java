@@ -19,7 +19,7 @@ public class TimelineActivity_ViewBinding<T extends TimelineActivity> implements
 
   private View view2131427441;
 
-  private View view2131427442;
+  private View view2131427444;
 
   public TimelineActivity_ViewBinding(final T target, Finder finder, Object source) {
     this.target = target;
@@ -38,7 +38,7 @@ public class TimelineActivity_ViewBinding<T extends TimelineActivity> implements
     target.swipeContainer = finder.findRequiredViewAsType(source, R.id.swipeContainer, "field 'swipeContainer'", SwipeRefreshLayout.class);
     view = finder.findRequiredView(source, R.id.fab, "field 'fab' and method 'onClick'");
     target.fab = finder.castView(view, R.id.fab, "field 'fab'", FloatingActionButton.class);
-    view2131427442 = view;
+    view2131427444 = view;
     view.setOnClickListener(new DebouncingOnClickListener() {
       @Override
       public void doClick(View p0) {
@@ -59,8 +59,8 @@ public class TimelineActivity_ViewBinding<T extends TimelineActivity> implements
 
     view2131427441.setOnClickListener(null);
     view2131427441 = null;
-    view2131427442.setOnClickListener(null);
-    view2131427442 = null;
+    view2131427444.setOnClickListener(null);
+    view2131427444 = null;
 
     this.target = null;
   }

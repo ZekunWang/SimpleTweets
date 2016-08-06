@@ -5,11 +5,9 @@ import android.text.format.DateUtils;
 import android.util.Log;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 
-/**
- * Created by zwang_000 on 7/30/2016.
- */
 public class ParseRelativeDate {
     // getRelativeTimeAgo("Mon Apr 01 21:16:23 +0000 2014");
     public static String getRelativeTimeAgo(String rawJsonDate) {

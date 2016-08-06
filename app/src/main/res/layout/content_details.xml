@@ -12,8 +12,10 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorAccent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:background="@color/icons"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:showIn="@layout/activity_details"
+        tools:context="com.codepath.apps.simpletweets.activities.DetailsActivity">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -36,15 +38,15 @@
                 android:hint='@{"Reply to " + tweet.getUser().getName()}'/>
 
             <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/button_width"
+                android:layout_height="@dimen/button_height"
                 android:layout_marginTop="@dimen/item_view_padding"
                 android:layout_marginLeft="@dimen/item_view_padding"
                 android:text="@string/compose_tweet"
                 android:textAllCaps="false"
                 android:visibility="gone"
                 android:id="@+id/btnCompose"
-                android:textColor="@color/colorAccent"
+                android:textColor="@color/icons"
                 android:background="@drawable/button_background"
                 android:onClick="onSubmit"
                 android:layout_alignParentRight="true"
@@ -64,19 +66,23 @@
 
         </RelativeLayout>
 
-        <LinearLayout
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/svDetails"
+            android:layout_alignParentTop="true"
+            android:layout_above="@+id/rlReply"
+            android:background="@drawable/item_view_background">
+
+            <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:background="@drawable/item_view_background"
-            android:layout_above="@+id/rlReply"
-            tools:showIn="@layout/activity_details"
-            tools:context="com.codepath.apps.simpletweets.activities.DetailsActivity">
+            android:background="@drawable/item_view_background">
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/colorAccent"
                 android:paddingTop="@dimen/item_view_padding"
                 android:paddingLeft="@dimen/item_view_padding"
                 android:paddingRight="@dimen/item_view_padding">
@@ -87,7 +93,7 @@
                     android:layout_marginRight="@dimen/item_img_profile_margin"
                     android:layout_marginBottom="@dimen/item_img_profile_margin"
                     android:id="@+id/ivProfile"
-                    tools:src="@color/colorPrimary"
+                    tools:src="@color/primary"
                     app:profileImageUrl='@{tweet.getUser().getProfileImageUrl()}'
                     android:layout_alignParentTop="true"
                     android:layout_alignParentLeft="true"
@@ -122,23 +128,31 @@
                     android:layout_below="@+id/tvUsername"
                     android:layout_alignLeft="@+id/tvUsername"/>
                 <com.codepath.apps.simpletweets.others.LinkifiedTextView
+                    android:id="@+id/tvBody"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/item_text_content"
                     android:textSize="@dimen/item_text_username"
-                    android:text='body'
+                    tools:text='body'
                     android:autoLink="all"
-                    android:textColorLink="@color/colorPrimary"
-                    android:id="@+id/tvBody"
+                    android:textColorLink="@color/primary"
                     android:layout_below="@+id/ivProfile"/>
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/item_view_padding"
+                    android:layout_below="@id/tvBody"
+                    android:id="@+id/ivMedia"
+                    android:visibility="gone"/>
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/details_icon_height"
                     android:id="@+id/tvAbsoluteTime"
                     android:gravity="center_vertical"
                     tools:text="2:41 PM  01 Aug 16"
+                    app:timeFormat='@{tweet.getCreatedAt()}'
                     android:background="@drawable/item_view_background"
-                    android:layout_below="@+id/tvBody"
+                    android:layout_below="@+id/ivMedia"
                     android:textColor="@color/item_text_relative_time"
                     android:textSize="@dimen/item_text_relative_time"/>
 
@@ -194,7 +208,7 @@
                 android:paddingTop="@dimen/details_icon_padding"
                 android:paddingBottom="@dimen/details_icon_padding"
                 android:orientation="horizontal"
-                android:weightSum="5"
+                android:weightSum="4"
                 android:background="@drawable/item_view_background">
 
                 <ImageView
@@ -208,7 +222,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:src="@drawable/ic_twitter_retweet"/>
+                    android:id="@+id/ivRetweet"
+                    android:src='@{tweet.isRetweeted() ? @drawable/ic_twitter_retweet_lighted : @drawable/ic_twitter_retweet}' />
 
                 <ImageView
                     android:layout_width="match_parent"
@@ -221,6 +236,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:visibility="gone"
                     android:src="@drawable/ic_message_text"/>
 
                 <ImageView
@@ -231,5 +247,6 @@
             </LinearLayout>
         </LinearLayout>
 
+        </ScrollView>
     </RelativeLayout>
 </layout>

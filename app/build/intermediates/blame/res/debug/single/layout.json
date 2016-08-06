@@ -52,10 +52,6 @@
         "source": "C:\\Users\\zwang_000\\AndroidStudioProjects\\SimpleTweets\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.1.1\\res\\layout\\notification_template_big_media.xml"
     },
     {
-        "merged": "C:\\Users\\zwang_000\\AndroidStudioProjects\\SimpleTweets\\app\\build\\intermediates\\res\\merged\\debug\\layout\\content_compose.xml",
-        "source": "C:\\Users\\zwang_000\\AndroidStudioProjects\\SimpleTweets\\app\\src\\main\\res\\layout\\content_compose.xml"
-    },
-    {
         "merged": "C:\\Users\\zwang_000\\AndroidStudioProjects\\SimpleTweets\\app\\build\\intermediates\\res\\merged\\debug\\layout\\notification_media_action.xml",
         "source": "C:\\Users\\zwang_000\\AndroidStudioProjects\\SimpleTweets\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.1.1\\res\\layout\\notification_media_action.xml"
     },
@@ -90,10 +86,6 @@
     {
         "merged": "C:\\Users\\zwang_000\\AndroidStudioProjects\\SimpleTweets\\app\\build\\intermediates\\res\\merged\\debug\\layout\\design_navigation_menu_item.xml",
         "source": "C:\\Users\\zwang_000\\AndroidStudioProjects\\SimpleTweets\\app\\build\\intermediates\\exploded-aar\\com.android.support\\design\\24.1.1\\res\\layout\\design_navigation_menu_item.xml"
-    },
-    {
-        "merged": "C:\\Users\\zwang_000\\AndroidStudioProjects\\SimpleTweets\\app\\build\\intermediates\\res\\merged\\debug\\layout\\activity_compose.xml",
-        "source": "C:\\Users\\zwang_000\\AndroidStudioProjects\\SimpleTweets\\app\\src\\main\\res\\layout\\activity_compose.xml"
     },
     {
         "merged": "C:\\Users\\zwang_000\\AndroidStudioProjects\\SimpleTweets\\app\\build\\intermediates\\res\\merged\\debug\\layout\\notification_template_big_media_narrow.xml",
@@ -196,6 +188,10 @@
         "source": "C:\\Users\\zwang_000\\AndroidStudioProjects\\SimpleTweets\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.1.1\\res\\layout\\notification_template_part_chronometer.xml"
     },
     {
+        "merged": "C:\\Users\\zwang_000\\AndroidStudioProjects\\SimpleTweets\\app\\build\\intermediates\\res\\merged\\debug\\layout\\fragment_compose.xml",
+        "source": "C:\\Users\\zwang_000\\AndroidStudioProjects\\SimpleTweets\\app\\src\\main\\res\\layout\\fragment_compose.xml"
+    },
+    {
         "merged": "C:\\Users\\zwang_000\\AndroidStudioProjects\\SimpleTweets\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_screen_simple_overlay_action_mode.xml",
         "source": "C:\\Users\\zwang_000\\AndroidStudioProjects\\SimpleTweets\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.1.1\\res\\layout\\abc_screen_simple_overlay_action_mode.xml"
     },
@@ -208,12 +204,12 @@
         "source": "C:\\Users\\zwang_000\\AndroidStudioProjects\\SimpleTweets\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.1.1\\res\\layout\\select_dialog_item_material.xml"
     },
     {
-        "merged": "C:\\Users\\zwang_000\\AndroidStudioProjects\\SimpleTweets\\app\\build\\intermediates\\res\\merged\\debug\\layout\\activity_timeline.xml",
-        "source": "C:\\Users\\zwang_000\\AndroidStudioProjects\\SimpleTweets\\app\\src\\main\\res\\layout\\activity_timeline.xml"
-    },
-    {
         "merged": "C:\\Users\\zwang_000\\AndroidStudioProjects\\SimpleTweets\\app\\build\\intermediates\\res\\merged\\debug\\layout\\content_timeline.xml",
         "source": "C:\\Users\\zwang_000\\AndroidStudioProjects\\SimpleTweets\\app\\src\\main\\res\\layout\\content_timeline.xml"
+    },
+    {
+        "merged": "C:\\Users\\zwang_000\\AndroidStudioProjects\\SimpleTweets\\app\\build\\intermediates\\res\\merged\\debug\\layout\\activity_timeline.xml",
+        "source": "C:\\Users\\zwang_000\\AndroidStudioProjects\\SimpleTweets\\app\\src\\main\\res\\layout\\activity_timeline.xml"
     },
     {
         "merged": "C:\\Users\\zwang_000\\AndroidStudioProjects\\SimpleTweets\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_search_view.xml",

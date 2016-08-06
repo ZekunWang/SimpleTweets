@@ -2,9 +2,11 @@ package com.codepath.apps.simpletweets.activities;
 
 import com.codepath.apps.simpletweets.R;
 import com.codepath.apps.simpletweets.adapters.ContactsAdapter;
+import com.codepath.apps.simpletweets.fragments.ComposeDialogFragment;
 import com.codepath.apps.simpletweets.listeners.EndlessRecyclerViewScrollListener;
 import com.codepath.apps.simpletweets.models.Tweet;
 import com.codepath.apps.simpletweets.models.User;
+import com.codepath.apps.simpletweets.others.HelperMethods;
 import com.codepath.apps.simpletweets.others.ItemClickSupport;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -15,6 +17,7 @@ import org.parceler.Parcels;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -24,18 +27,21 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cz.msebera.android.httpclient.Header;
 
-public class TimelineActivity extends AppCompatActivity {
+public class TimelineActivity extends AppCompatActivity
+        implements ComposeDialogFragment.ComposeDialogListener {
 
     private TwitterClient client;
-    private ArrayList<Tweet> tweets;
+    private List<Tweet> tweets;
     private ContactsAdapter adapter;
     LinearLayoutManager mLinearLayoutManager;
     @BindView(R.id.toolbar) Toolbar toolbar;
@@ -58,8 +64,13 @@ public class TimelineActivity extends AppCompatActivity {
         // Set Toolbar as Actionbar
         setSupportActionBar(toolbar);
 
-        // Create ArrayList data source
-        tweets = new ArrayList<>();
+        // Get saved Tweets from DB
+        if (!HelperMethods.isConnected(getApplicationContext())) {
+            tweets = ContactsAdapter.getAll();
+        } else {
+            tweets = new ArrayList<>();
+            ContactsAdapter.clearAll();
+        }
         // Contact adapter from data source
         adapter = new ContactsAdapter(this, tweets);
         // Construct the adapter from data source
@@ -72,13 +83,15 @@ public class TimelineActivity extends AppCompatActivity {
         // Get the client
         client = TwitterApplication.getRestClient();    // singleton client
         // Populate new data
-        populateTimeline(null, null);
+        if (HelperMethods.isNetworkAvailable(this) && HelperMethods.isOnline()) {
+            populateTimeline(null, null);
+        }
 
         // Set endless scroll
         rvTweets.addOnScrollListener(new EndlessRecyclerViewScrollListener(mLinearLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-                populateTimeline(null, tweets.get(totalItemsCount - 1).getUid() - 1);
+                populateTimeline(null, tweets.get(totalItemsCount - 1).getTid() - 1);
             }
         });
 
@@ -100,10 +113,13 @@ public class TimelineActivity extends AppCompatActivity {
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                // Clear existing data
-                adapter.clear();
-                // Populate new data
-                populateTimeline(null, null);
+                // Check connection
+                if (HelperMethods.isConnected(getApplicationContext())) {
+                    // Clear existing data
+                    adapter.clear();
+                    // Populate new data
+                    populateTimeline(null, null);
+                }
             }
         });
         // Configure the refreshing colors
@@ -121,13 +137,17 @@ public class TimelineActivity extends AppCompatActivity {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject jsonObject) {
                 ACCOUNT = User.fromJSONObject(jsonObject);
+                // Save Account
+                ACCOUNT.save();
             }
 
             // FAILURE
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable,
                 JSONObject errorResponse) {
-                Log.d("DEBUG", "Verify credentials error: " + errorResponse.toString());
+                if (errorResponse != null) {
+                    Log.d("DEBUG", "Verify credentials error: " + errorResponse.toString());
+                }
             }
         });
     }
@@ -178,22 +198,29 @@ public class TimelineActivity extends AppCompatActivity {
     }
 
     private void composeTweet() {
-        Intent intent = new Intent(this, ComposeActivity.class);
-        intent.putExtra("request_code", REQUEST_COMPOSE);
-        startActivityForResult(intent, REQUEST_COMPOSE);
+        ComposeDialogFragment composeDialogFragment = ComposeDialogFragment.newInstance(REQUEST_COMPOSE, null);
+        composeDialogFragment.show(getFragmentManager(), "fragment_compose");
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // REQUEST_COMPOSE is defined above
-        if (requestCode == REQUEST_COMPOSE && resultCode == RESULT_OK) {
-            Tweet tweet = Parcels.unwrap(data.getParcelableExtra("tweet"));
+    public void onFinishComposeDialog(int requestCode, Tweet tweet) {
+        if (requestCode == REQUEST_COMPOSE) {
             postTweet(tweet);
-        } else if (requestCode == REQUEST_DETAILS && resultCode == RESULT_OK) {
-            int position = data.getIntExtra("position", 0);
+        } else if (requestCode == DetailsActivity.REQUEST_REPLY) {
+            HelperMethods.postTweet(tweet);
+        }
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+         if (requestCode == REQUEST_DETAILS && resultCode == RESULT_OK) {
+            int position = data.getIntExtra("position", -1);
             Tweet updatedTweet = Parcels.unwrap(data.getParcelableExtra("tweet"));
+            // Update Tweet
             tweets.set(position, updatedTweet);
-            adapter.notifyItemChanged(position);
+            // Update position
+            adapter.update(position);
         }
     }
 
@@ -213,7 +240,9 @@ public class TimelineActivity extends AppCompatActivity {
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable,
                 JSONObject errorResponse) {
-                Log.d("DEBUG", "Compose Tweet Error: " + errorResponse.toString());
+                if (errorResponse != null) {
+                    Log.d("DEBUG", "Compose Tweet Error: " + errorResponse.toString());
+                }
             }
         });
     }
@@ -234,5 +263,4 @@ public class TimelineActivity extends AppCompatActivity {
                 break;
         }
     }
-
 }

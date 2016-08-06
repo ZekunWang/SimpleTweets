@@ -6,8 +6,6 @@ import android.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -16,6 +14,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewStub;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,16 +23,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.codepath.apps.simpletweets.R;
 import com.codepath.apps.simpletweets.databinding.ActivityDetailsBinding;
+import com.codepath.apps.simpletweets.fragments.ComposeDialogFragment;
+import com.codepath.apps.simpletweets.models.Medium;
 import com.codepath.apps.simpletweets.models.Tweet;
+import com.codepath.apps.simpletweets.others.HelperMethods;
 import com.codepath.apps.simpletweets.others.PatternEditableBuilder;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONObject;
 import org.parceler.Parcels;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 import butterknife.BindView;
@@ -44,7 +46,8 @@ import butterknife.OnTouch;
 import cz.msebera.android.httpclient.Header;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
-public class DetailsActivity extends AppCompatActivity {
+public class DetailsActivity extends AppCompatActivity
+        implements ComposeDialogFragment.ComposeDialogListener{
 
     public static final int REQUEST_REPLY = 21;
     @BindView(R.id.toolbar) Toolbar toolbar;
@@ -59,6 +62,7 @@ public class DetailsActivity extends AppCompatActivity {
     @BindView(R.id.btnCompose) Button btnCompose;
     @BindView(R.id.tvAvailableChars) TextView tvAvailableChars;
     @BindView(R.id.ivFavorite) ImageView ivFavorite;
+    @BindView(R.id.ivMedia) ImageView ivMedia;
     // Store the binding
     private ActivityDetailsBinding binding;
     Tweet tweet;
@@ -77,7 +81,6 @@ public class DetailsActivity extends AppCompatActivity {
         position = getIntent().getIntExtra("position", 0);
         // Bind data with layout
         binding.setTweet(tweet);
-
         // Bind views
         ButterKnife.bind(this);
 
@@ -89,61 +92,22 @@ public class DetailsActivity extends AppCompatActivity {
 
         tvBody.setText(tweet.getBody());
 
-        // Search for @ and #
-        int color = ContextCompat.getColor(getApplicationContext(),R.color.colorPrimary);
-        new PatternEditableBuilder().
-            addPattern(Pattern.compile("\\@(\\w+)"), color,
-                new PatternEditableBuilder.SpannableClickedListener() {
-                    @Override
-                    public void onSpanClicked(String text) {
-                        Toast.makeText(getApplicationContext(), "Clicked username: " + text,
-                            Toast.LENGTH_SHORT).show();
-                    }
-                }).
-            addPattern(Pattern.compile("\\#(\\w+)"), color,
-                new PatternEditableBuilder.SpannableClickedListener() {
-                    @Override
-                    public void onSpanClicked(String text) {
-                        Toast.makeText(getApplicationContext(), "Clicked hashtag: " + text,
-                            Toast.LENGTH_SHORT).show();
-                    }
-                }).into(tvBody);
-
-        etReply.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                int remain = 140 - editable.length(), color = 0;
-                tvAvailableChars.setText("" + remain);
-                if (remain < 0) {
-                    // Set alarm color for count text
-                    tvAvailableChars.setTextColor(Color.RED);
-                    // Set disable button text color
-                    color = ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary);
-                    btnCompose.setTextColor(color);
-                    // Set disable background for button
-                    btnCompose.setBackgroundResource(R.drawable.button_background_disabled);
-                    // Disable clickable
-                    btnCompose.setClickable(false);
-                } else {
-                    // Set normal color for count text
-                    color = ContextCompat.getColor(getApplicationContext(), R.color.item_text_content);
-                    tvAvailableChars.setTextColor(color);
-                    // Set disable button text color
-                    color = ContextCompat.getColor(getApplicationContext(), R.color.colorAccent);
-                    btnCompose.setTextColor(color);
-                    // Set regular background for button
-                    btnCompose.setBackgroundResource(R.drawable.button_background);
-                    // Enable clickable
-                    btnCompose.setClickable(true);
-                }
+        // Inflate media
+        List<Medium> media = tweet.getMedia();
+        if (media != null) {
+            if (media.size() == 1) {
+                ivMedia.setVisibility(View.VISIBLE);
+                Glide.with(this)
+                    .load(media.get(0).getUrl())
+                    .fitCenter()
+                    .into(ivMedia);
             }
-        });
+        }
+
+        // Search for @ and #
+        HelperMethods.formatBody(getApplicationContext(), tvBody);
+        // Set text change listener
+        HelperMethods.setTextChangedListener(this, etReply, tvAvailableChars, btnCompose);
     }
 
     @OnFocusChange(R.id.etReply)
@@ -163,7 +127,7 @@ public class DetailsActivity extends AppCompatActivity {
                     .append(tweet.getUser().getScreenName())
                     .append(' ');
                 // @ all mentioned user
-                for (String screenName : tweet.getUserMentioned()) {
+                for (String screenName : tweet.getUserMentions()) {
                     if (!screenName.equals(tweet.getUser().getScreenName())) {
                         sb.append("@").append(screenName).append(' ');
                     }
@@ -199,16 +163,23 @@ public class DetailsActivity extends AppCompatActivity {
     }
 
     private void jumpToReply() {
-        Intent intent = new Intent(getApplicationContext(), ComposeActivity.class);
-        intent.putExtra("tweet", Parcels.wrap(tweet));
-        intent.putExtra("request_code", REQUEST_REPLY);
-        startActivityForResult(intent, REQUEST_REPLY);
+        ComposeDialogFragment composeDialogFragment = ComposeDialogFragment.newInstance(REQUEST_REPLY, tweet);
+        composeDialogFragment.show(getFragmentManager(), "fragment_compose");
+    }
+
+    @Override
+    public void onFinishComposeDialog(int requestCode, Tweet t) {
+        if (requestCode == REQUEST_REPLY) {
+            HelperMethods.postTweet(t);
+        }
     }
 
     private void clearReply() {
         // Clear reply EditText if not empty
         etReply.setText("");
         etReply.clearFocus();
+        btnCompose.setVisibility(View.GONE);
+        tvAvailableChars.setVisibility(View.GONE);
     }
 
     @OnClick({R.id.ivReply, R.id.ivFavorite})
@@ -218,77 +189,10 @@ public class DetailsActivity extends AppCompatActivity {
                 jumpToReply();
                 break;
             case R.id.ivFavorite:
-                if (tweet.isFavorited()) {
-                    client.unSetFavorite(tweet, new JsonHttpResponseHandler(){
-                        // SUCCESS
-                        @Override
-                        public void onSuccess(int statusCode, Header[] headers, JSONObject jsonObject) {
-                            Tweet newTweet = Tweet.fromJSONObject(jsonObject);
-                            if (newTweet != null) {
-                                tweet.setFavorited(false);
-                                //ivFavorite.setImageResource(R.drawable.ic_heart);
-                            }
-                        }
-
-                        // FAILURE
-                        @Override
-                        public void onFailure(int statusCode, Header[] headers, Throwable throwable,
-                            JSONObject errorResponse) {
-                            Log.d("DEBUG", "Unset Favorite Error: " + errorResponse.toString());
-                        }
-                    });
-                } else {
-                    client.setFavorite(tweet, new JsonHttpResponseHandler(){
-                        // SUCCESS
-                        @Override
-                        public void onSuccess(int statusCode, Header[] headers, JSONObject jsonObject) {
-                            Tweet newTweet = Tweet.fromJSONObject(jsonObject);
-                            if (newTweet != null) {
-                                tweet.setFavorited(true);
-                                //ivFavorite.setImageResource(R.drawable.ic_heart_lighted);
-                            }
-                        }
-
-                        // FAILURE
-                        @Override
-                        public void onFailure(int statusCode, Header[] headers, Throwable throwable,
-                            JSONObject errorResponse) {
-                            Log.d("DEBUG", "Set Favorite Error: " + errorResponse.toString());
-                        }
-                    });
-                }
+                // Switch favorite
+                HelperMethods.switchFavorite(tweet, ivFavorite, tvFavoriteCount);
                 break;
         }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // REQUEST_COMPOSE is defined above
-        if (resultCode == RESULT_OK && requestCode == REQUEST_REPLY) {
-            Tweet tweet = Parcels.unwrap(data.getParcelableExtra("tweet"));
-            postTweet(tweet);
-        }
-    }
-
-    private void postTweet(Tweet tweet) {
-        client.composeTweet(tweet, new JsonHttpResponseHandler(){
-            // SUCCESS
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject jsonObject) {
-                Tweet newTweet = Tweet.fromJSONObject(jsonObject);
-                if (newTweet != null) {
-                    // Clear EditText
-                    clearReply();
-                }
-            }
-
-            // FAILURE
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable,
-                JSONObject errorResponse) {
-                Log.d("DEBUG", "Post Tweet Comment Error: " + errorResponse.toString());
-            }
-        });
     }
 
     // Clear focus on EditText when click outside
@@ -322,7 +226,9 @@ public class DetailsActivity extends AppCompatActivity {
         newTweet.inReplyToStatusId = tweet.getInReplyToStatusId();
 
         // Post new Tweet reply
-        postTweet(newTweet);
+        HelperMethods.postTweet(newTweet);
+        // Clear EditText
+        clearReply();
     }
 
     @Override

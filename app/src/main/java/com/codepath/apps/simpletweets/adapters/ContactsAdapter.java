@@ -1,30 +1,50 @@
-    package com.codepath.apps.simpletweets.adapters;
+package com.codepath.apps.simpletweets.adapters;
 
+import com.activeandroid.query.Delete;
+    import com.activeandroid.query.Select;
     import com.bumptech.glide.Glide;
     import com.bumptech.glide.load.engine.DiskCacheStrategy;
-    import com.codepath.apps.simpletweets.R;
+import com.codepath.apps.simpletweets.BR;
+import com.codepath.apps.simpletweets.R;
+import com.codepath.apps.simpletweets.activities.DetailsActivity;
+import com.codepath.apps.simpletweets.activities.TwitterApplication;
+    import com.codepath.apps.simpletweets.activities.TwitterClient;
+import com.codepath.apps.simpletweets.databinding.ActivityDetailsBinding;
+import com.codepath.apps.simpletweets.fragments.ComposeDialogFragment;
+    import com.codepath.apps.simpletweets.models.Medium;
     import com.codepath.apps.simpletweets.models.Tweet;
+    import com.codepath.apps.simpletweets.models.User;
     import com.codepath.apps.simpletweets.models.ViewHolder;
-    import com.codepath.apps.simpletweets.others.ParseRelativeDate;
+import com.codepath.apps.simpletweets.others.HelperMethods;
+import com.codepath.apps.simpletweets.others.ParseRelativeDate;
     import com.codepath.apps.simpletweets.others.PatternEditableBuilder;
+    import com.loopj.android.http.JsonHttpResponseHandler;
 
-    import android.content.Context;
-    import android.graphics.Color;
+    import org.json.JSONObject;
+
+import android.app.Activity;
+import android.content.Context;
+import android.databinding.DataBindingUtil;
+import android.databinding.ViewDataBinding;
+import android.graphics.Color;
     import android.support.v4.content.ContextCompat;
     import android.support.v7.widget.RecyclerView;
     import android.util.DisplayMetrics;
+    import android.util.Log;
     import android.view.LayoutInflater;
     import android.view.View;
     import android.view.ViewGroup;
     import android.widget.Toast;
 
-    import java.util.List;
-    import java.util.regex.Pattern;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
 
+    import cz.msebera.android.httpclient.Header;
     import jp.wasabeef.glide.transformations.BlurTransformation;
     import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
-    public class ContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class ContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
         // Store a member variable for the contacts
         private List<Tweet> contacts;
@@ -36,7 +56,7 @@
         double width;
         int height;
 
-        // Define the listener interface
+    // Define the listener interface
         public interface OnItemClickListener {
             void onItemClick(View itemView, int position);
         }
@@ -66,9 +86,10 @@
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             RecyclerView.ViewHolder viewHolder;
             LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+                ViewDataBinding binding = DataBindingUtil.inflate(inflater, R.layout.item_tweet, parent, false);
             // distinguish view by viewType
-            View contactView = inflater.inflate(R.layout.item_tweet, parent, false);
-            viewHolder = new ViewHolder(contactView);
+            //View contactView = inflater.inflate(R.layout.item_tweet, parent, false);
+            viewHolder = new ViewHolder(binding);
             return viewHolder;
         }
 
@@ -76,43 +97,47 @@
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
             // get data item for position
-            Tweet tweet = contacts.get(position);
-            ViewHolder vh = (ViewHolder) viewHolder;
+            final Tweet tweet = contacts.get(position);
+            final ViewHolder vh = (ViewHolder) viewHolder;
+            // Add Tweet to the binding
+            vh.getBinding().setVariable(BR.tweet, tweet);
             // Populate data
-            vh.getTvUsername().setText(tweet.getUser().getName());
-            vh.getTvScreenName().setText("@" + tweet.getUser().getScreenName());
-            vh.getTvRelativeTime().setText(ParseRelativeDate.getRelativeTimeAgo(tweet.getCreatedAt()));
+       //     vh.getTvUsername().setText(tweet.getUser().getName());
+       //     vh.getTvScreenName().setText("@" + tweet.getUser().getScreenName());
+       //     vh.getTvRelativeTime().setText(ParseRelativeDate.getRelativeTimeAgo(tweet.getCreatedAt()));
             vh.getTvBody().setText(tweet.getBody());
-            vh.getTvRetweetCount().setText("" + tweet.getRetweetCount());
-            vh.getTvFavoriteCount().setText("" + tweet.getFavoriteCount());
-            vh.getIvFavorite().setImageResource(tweet.isFavorited() ? R.drawable.ic_heart_lighted : R.drawable.ic_heart);
+       //     vh.getTvRetweetCount().setText("" + tweet.getRetweetCount());
+       //     vh.getTvFavoriteCount().setText("" + tweet.getFavoriteCount());
+       //     vh.getIvFavorite().setImageResource(tweet.isFavorited() ? R.drawable.ic_heart_lighted : R.drawable.ic_heart);
 
             // Search for @ and #
-            int color = ContextCompat.getColor(context,R.color.colorPrimary);
-            new PatternEditableBuilder().
-                addPattern(Pattern.compile("\\@(\\w+)"), color,
-                    new PatternEditableBuilder.SpannableClickedListener() {
-                        @Override
-                        public void onSpanClicked(String text) {
-                            Toast.makeText(getContext(), "Clicked username: " + text,
-                                Toast.LENGTH_SHORT).show();
-                        }
-                    }).
-                addPattern(Pattern.compile("\\#(\\w+)"), color,
-                    new PatternEditableBuilder.SpannableClickedListener() {
-                        @Override
-                        public void onSpanClicked(String text) {
-                            Toast.makeText(getContext(), "Clicked hashtag: " + text,
-                                Toast.LENGTH_SHORT).show();
-                        }
-                    }).into(vh.getTvBody());
+            HelperMethods.formatBody(getContext(), vh.getTvBody());
 
+            // Load profile image
             Glide.with(getContext())
                 .load(tweet.getUser().getProfileImageUrl())
                 .placeholder(R.drawable.ic_launcher)
                 .bitmapTransform(new RoundedCornersTransformation(getContext(), 5, 0))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(vh.getIvProfile());
+
+            // Set favorite listener
+            vh.getIvFavorite().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // Switch favorite
+                    HelperMethods.switchFavorite(tweet, vh.getIvFavorite(), vh.getTvFavoriteCount());
+                }
+            });
+            // Set reply listener
+            vh.getIvReply().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ComposeDialogFragment composeDialogFragment = ComposeDialogFragment.newInstance(
+                        DetailsActivity.REQUEST_REPLY, tweet);
+                    composeDialogFragment.show(((Activity) getContext()).getFragmentManager(), "fragment_compose");
+                }
+            });
         }
 
         // Returns the total count of items in the list
@@ -121,30 +146,88 @@
             return contacts.size();
         }
 
+        public static List<Tweet> getAll() {
+            //return new ArrayList<Tweet>();
+            // Query all saved Tweets
+            List<Tweet> newTweets =
+                new Select()
+                .from(Tweet.class)
+                .orderBy("tid DESC")    // large Tweet id == newer Tweet
+                .execute();
+            // Get media
+            for (Tweet t : newTweets) {
+                Log.i("DEBUG", "has user ? " + (t.getUser() != null));
+                t.media = new Select()
+                        .from(Medium.class)
+                        .where("tweet = ?", t.getId())
+                        .execute();
+            }
+            return newTweets;
+        }
+
+        public static void clearAll() {
+            new Delete().from(Tweet.class).execute();
+            new Delete().from(Medium.class).execute();
+        }
+
         public void clear() {
+            // Clear DB
+            new Delete().from(Tweet.class).execute();
+            // Clear Tweets list
             contacts.clear();
+            // Notify adapter
             notifyDataSetChanged();
         }
 
         public void addAll(List<Tweet> list) {
-            int pos = contacts.size();
             if (list != null) {
+                // Save in DB
+                for (Tweet tweet : list) {
+                    tweet.save();
+                }
+                // Add to Tweets list
                 contacts.addAll(list);
+                // Notify adapter
                 notifyDataSetChanged();
             }
         }
 
         public void add(Tweet newTweet) {
-            if (newTweet != null) {
-                contacts.add(newTweet);
+            add(contacts.size(), newTweet);
+        }
+
+        public void add(int pos, Tweet newTweet) {
+            if (newTweet != null && pos >= 0 && pos <= contacts.size()) {
+                // Save in DB
+                newTweet.save();
+                // Add to Tweets list
+                contacts.add(pos, newTweet);
+                // Notify adapter
                 notifyDataSetChanged();
             }
         }
 
-        public void add(int pos, Tweet newTweet) {
-            if (newTweet != null) {
-                contacts.add(pos, newTweet);
+        public void update(int pos) {
+            if (pos >= 0 && pos < contacts.size()) {
+                // Save to DB
+                contacts.get(pos).save();
+                // Notify adapter
+                notifyItemChanged(pos);
+            }
+        }
+
+        public void remove(int pos) {
+            if (pos >= 0 && pos < contacts.size()) {
+                // Delete from DB
+                contacts.get(pos).delete();
+                // Delete related Medium
+                new Delete().from(Medium.class).
+                    where("tweet = ?", contacts.get(pos).getId())
+                    .execute();
+                // Remove from Tweets list
+                contacts.remove(pos);
+                // Notify adapter
                 notifyDataSetChanged();
             }
         }
-    }
+}

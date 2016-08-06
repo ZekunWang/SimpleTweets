@@ -19,11 +19,11 @@ import java.lang.Override;
 public class DetailsActivity_ViewBinding<T extends DetailsActivity> implements Unbinder {
   protected T target;
 
-  private View view2131427447;
+  private View view2131427446;
 
-  private View view2131427457;
+  private View view2131427461;
 
-  private View view2131427456;
+  private View view2131427459;
 
   public DetailsActivity_ViewBinding(final T target, Finder finder, Object source) {
     this.target = target;
@@ -39,7 +39,7 @@ public class DetailsActivity_ViewBinding<T extends DetailsActivity> implements U
     target.tvFavoriteCount = finder.findRequiredViewAsType(source, R.id.tvFavoriteCount, "field 'tvFavoriteCount'", TextView.class);
     view = finder.findRequiredView(source, R.id.etReply, "field 'etReply', method 'onFocusChange', and method 'onTouch'");
     target.etReply = finder.castView(view, R.id.etReply, "field 'etReply'", EditText.class);
-    view2131427447 = view;
+    view2131427446 = view;
     view.setOnFocusChangeListener(new View.OnFocusChangeListener() {
       @Override
       public void onFocusChange(View p0, boolean p1) {
@@ -56,15 +56,16 @@ public class DetailsActivity_ViewBinding<T extends DetailsActivity> implements U
     target.tvAvailableChars = finder.findRequiredViewAsType(source, R.id.tvAvailableChars, "field 'tvAvailableChars'", TextView.class);
     view = finder.findRequiredView(source, R.id.ivFavorite, "field 'ivFavorite' and method 'onClick'");
     target.ivFavorite = finder.castView(view, R.id.ivFavorite, "field 'ivFavorite'", ImageView.class);
-    view2131427457 = view;
+    view2131427461 = view;
     view.setOnClickListener(new DebouncingOnClickListener() {
       @Override
       public void doClick(View p0) {
         target.onClick(p0);
       }
     });
+    target.ivMedia = finder.findRequiredViewAsType(source, R.id.ivMedia, "field 'ivMedia'", ImageView.class);
     view = finder.findRequiredView(source, R.id.ivReply, "method 'onClick'");
-    view2131427456 = view;
+    view2131427459 = view;
     view.setOnClickListener(new DebouncingOnClickListener() {
       @Override
       public void doClick(View p0) {
@@ -90,14 +91,15 @@ public class DetailsActivity_ViewBinding<T extends DetailsActivity> implements U
     target.btnCompose = null;
     target.tvAvailableChars = null;
     target.ivFavorite = null;
+    target.ivMedia = null;
 
-    view2131427447.setOnFocusChangeListener(null);
-    view2131427447.setOnTouchListener(null);
-    view2131427447 = null;
-    view2131427457.setOnClickListener(null);
-    view2131427457 = null;
-    view2131427456.setOnClickListener(null);
-    view2131427456 = null;
+    view2131427446.setOnFocusChangeListener(null);
+    view2131427446.setOnTouchListener(null);
+    view2131427446 = null;
+    view2131427461.setOnClickListener(null);
+    view2131427461 = null;
+    view2131427459.setOnClickListener(null);
+    view2131427459 = null;
 
     this.target = null;
   }
