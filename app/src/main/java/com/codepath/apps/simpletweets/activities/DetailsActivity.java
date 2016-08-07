@@ -2,6 +2,7 @@ package com.codepath.apps.simpletweets.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.databinding.BindingAdapter;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -23,8 +24,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.codepath.apps.simpletweets.R;
 import com.codepath.apps.simpletweets.databinding.ActivityDetailsBinding;
+import com.codepath.apps.simpletweets.databinding.ContentDetailsBinding;
 import com.codepath.apps.simpletweets.fragments.ComposeDialogFragment;
 import com.codepath.apps.simpletweets.models.Medium;
 import com.codepath.apps.simpletweets.models.Tweet;
@@ -50,23 +53,15 @@ public class DetailsActivity extends AppCompatActivity
         implements ComposeDialogFragment.ComposeDialogListener{
 
     public static final int REQUEST_REPLY = 21;
-    @BindView(R.id.toolbar) Toolbar toolbar;
-    @BindView(R.id.ivProfile) ImageView ivProfile;
-    @BindView(R.id.tvUsername) TextView tvUsername;
-    @BindView(R.id.tvScreenName) TextView tvScreenName;
-    @BindView(R.id.tvBody) TextView tvBody;
-    @BindView(R.id.tvAbsoluteTime) TextView tvAbsoluteTime;
-    @BindView(R.id.tvRetweetCount) TextView tvRetweetCount;
-    @BindView(R.id.tvFavoriteCount) TextView tvFavoriteCount;
-    @BindView(R.id.etReply) EditText etReply;
-    @BindView(R.id.btnCompose) Button btnCompose;
-    @BindView(R.id.tvAvailableChars) TextView tvAvailableChars;
-    @BindView(R.id.ivFavorite) ImageView ivFavorite;
-    @BindView(R.id.ivMedia) ImageView ivMedia;
     // Store the binding
     private ActivityDetailsBinding binding;
+    ContentDetailsBinding subBinding;
+    EditText etReply;
+    Button btnCompose;
+    TextView tvAvailableChars;
     Tweet tweet;
-    TwitterClient client;
+    Tweet retweetedStatus;
+    Tweet targetTweet;
     int position;
 
     @Override
@@ -76,38 +71,56 @@ public class DetailsActivity extends AppCompatActivity
         // Inflate the content view (replacing `setContentView`)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_details);
 
+        // Set Toolbar as Actionbar
+        setSupportActionBar(binding.toolbar);
+        // Get includeDetails
+        subBinding = binding.includeDetails;
+
         // Get intent data
         tweet = Parcels.unwrap(getIntent().getParcelableExtra("tweet"));
+        retweetedStatus = tweet.getRetweetedStatus();
+        targetTweet = retweetedStatus != null ? retweetedStatus : tweet;
         position = getIntent().getIntExtra("position", 0);
         // Bind data with layout
-        binding.setTweet(tweet);
-        // Bind views
-        ButterKnife.bind(this);
+        binding.setTweet(targetTweet);
 
-        // Set Toolbar as Actionbar
-        setSupportActionBar(toolbar);
+        // Set retweeted status notice
+        if (retweetedStatus != null) {
+            subBinding.ivNotice.setVisibility(View.VISIBLE);
+            subBinding.tvNotice.setVisibility(View.VISIBLE);
+            if (TimelineActivity.ACCOUNT != null &&
+                TimelineActivity.ACCOUNT.getName().equals(tweet.getUser().getName())) {
+                subBinding.tvNotice.setText("You Retweeted");
+            } else {
+                subBinding.tvNotice.setText(tweet.getUser().getName() + " Retweeted");
+            }
+        }
 
-        // Get the client
-        client = TwitterApplication.getRestClient();    // singleton client
+        etReply = subBinding.etReply;
+        btnCompose = subBinding.btnCompose;
+        tvAvailableChars = subBinding.tvAvailableChars;
 
-        tvBody.setText(tweet.getBody());
+        subBinding.tvBody.setText(targetTweet.getBody());
 
         // Inflate media
-        List<Medium> media = tweet.getMedia();
+        List<Medium> media = targetTweet.getMedia();
         if (media != null) {
             if (media.size() == 1) {
-                ivMedia.setVisibility(View.VISIBLE);
+                subBinding.ivMedia.setVisibility(View.VISIBLE);
                 Glide.with(this)
-                    .load(media.get(0).getUrl())
-                    .fitCenter()
-                    .into(ivMedia);
+                    .load(media.get(0).getMediaUrl())
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(subBinding.ivMedia);
             }
         }
 
         // Search for @ and #
-        HelperMethods.formatBody(getApplicationContext(), tvBody);
+        HelperMethods.formatBody(getApplicationContext(), subBinding.tvBody);
         // Set text change listener
-        HelperMethods.setTextChangedListener(this, etReply, tvAvailableChars, btnCompose);
+        HelperMethods.setTextChangedListener(this, subBinding.etReply, subBinding.tvAvailableChars, subBinding.btnCompose);
+
+        // Bind data with ButterKnife
+        ButterKnife.bind(this);
     }
 
     @OnFocusChange(R.id.etReply)
@@ -124,11 +137,14 @@ public class DetailsActivity extends AppCompatActivity
             if (etReply.length() == 0) {
                 // @ status user screen name
                 StringBuilder sb = new StringBuilder("@")
-                    .append(tweet.getUser().getScreenName())
-                    .append(' ');
+                    .append(targetTweet.getUser().getScreenName()).append(' ');
+                // @ retweet user's screen name
+                if (retweetedStatus != null) {
+                    sb.append('@').append(tweet.getUser().getScreenName()).append(' ');
+                }
                 // @ all mentioned user
-                for (String screenName : tweet.getUserMentions()) {
-                    if (!screenName.equals(tweet.getUser().getScreenName())) {
+                for (String screenName : targetTweet.getUserMentions()) {
+                    if (!screenName.equals(targetTweet.getUser().getScreenName())) {
                         sb.append("@").append(screenName).append(' ');
                     }
                 }
@@ -182,7 +198,7 @@ public class DetailsActivity extends AppCompatActivity
         tvAvailableChars.setVisibility(View.GONE);
     }
 
-    @OnClick({R.id.ivReply, R.id.ivFavorite})
+    @OnClick({R.id.ivReply, R.id.ivFavorite, R.id.ivRetweet, R.id.ivShare})
     public void onClick(View v) {
         switch(v.getId()) {
             case R.id.ivReply:
@@ -190,9 +206,25 @@ public class DetailsActivity extends AppCompatActivity
                 break;
             case R.id.ivFavorite:
                 // Switch favorite
-                HelperMethods.switchFavorite(tweet, ivFavorite, tvFavoriteCount);
+                HelperMethods.switchFavorite(tweet, subBinding.ivFavorite, subBinding.tvFavoriteCount);
+                break;
+            case R.id.ivRetweet:
+                HelperMethods.switchRetweet(tweet, subBinding.ivRetweet, subBinding.tvRetweetCount);
+                break;
+            case R.id.ivShare:
+                shareLink();
                 break;
         }
+    }
+
+    public void shareLink() {
+        if (tweet.media == null || tweet.media.size() == 0) {
+            return;
+        }
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, tweet.media.get(0).getUrl());
+        startActivity(Intent.createChooser(shareIntent, "Share link using"));
     }
 
     // Clear focus on EditText when click outside
@@ -223,7 +255,7 @@ public class DetailsActivity extends AppCompatActivity
         Tweet newTweet = new Tweet();
         newTweet.body = etReply.getText().toString();
         newTweet.user = TimelineActivity.ACCOUNT;
-        newTweet.inReplyToStatusId = tweet.getInReplyToStatusId();
+        newTweet.inReplyToStatusId = targetTweet.getInReplyToStatusId();
 
         // Post new Tweet reply
         HelperMethods.postTweet(newTweet);

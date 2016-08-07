@@ -119,6 +119,8 @@ public class TimelineActivity extends AppCompatActivity
                     adapter.clear();
                     // Populate new data
                     populateTimeline(null, null);
+                } else {
+                    swipeContainer.setRefreshing(false);
                 }
             }
         });
@@ -136,9 +138,8 @@ public class TimelineActivity extends AppCompatActivity
             // SUCCESS
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject jsonObject) {
-                ACCOUNT = User.fromJSONObject(jsonObject);
-                // Save Account
-                ACCOUNT.save();
+                // Find account or create and save
+                ACCOUNT = User.findOrCreateFromJson(jsonObject);
             }
 
             // FAILURE

@@ -7,6 +7,8 @@ class DataBinderMapper {
     }
     public android.databinding.ViewDataBinding getDataBinder(android.databinding.DataBindingComponent bindingComponent, android.view.View view, int layoutId) {
         switch(layoutId) {
+                case com.codepath.apps.simpletweets.R.layout.item_tweet:
+                    return com.codepath.apps.simpletweets.databinding.ItemTweetBinding.bind(view, bindingComponent);
                 case com.codepath.apps.simpletweets.R.layout.activity_details:
                     return com.codepath.apps.simpletweets.databinding.ActivityDetailsBinding.bind(view, bindingComponent);
                 case com.codepath.apps.simpletweets.R.layout.content_details:
@@ -25,6 +27,12 @@ class DataBinderMapper {
         }
         final int code = tag.hashCode();
         switch(code) {
+            case -657259653: {
+                if(tag.equals("layout/item_tweet_0")) {
+                    return com.codepath.apps.simpletweets.R.layout.item_tweet;
+                }
+                break;
+            }
             case -600875192: {
                 if(tag.equals("layout/activity_details_0")) {
                     return com.codepath.apps.simpletweets.R.layout.activity_details;

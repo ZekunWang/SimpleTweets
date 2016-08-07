@@ -11,7 +11,9 @@ import org.json.JSONObject;
 import org.parceler.Parcel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Table(name = "media")
@@ -20,10 +22,13 @@ public class Medium extends Model {
 
     @Column(name="type")
     public String type;
+    @Column(name="media_url")
+    public String mediaUrl;
     @Column(name="url")
     public String url;
     @Column(name="tweet", onUpdate = Column.ForeignKeyAction.CASCADE, onDelete = Column.ForeignKeyAction.CASCADE)
     public Tweet tweet;
+    public Map<Integer, String> videos;
 
     public Medium() {
         super();
@@ -41,8 +46,15 @@ public class Medium extends Model {
         return url;
     }
 
+    public String getMediaUrl() {
+        return mediaUrl;
+    }
 
-    // Finds existing user based on remoteId or creates new user and returns
+    public Map<Integer, String> getVedios() {
+        return videos;
+    }
+
+    // Finds existing user based on row id of the tweet or creates new medium and returns
     public static Medium findOrCreateFromJson(JSONObject json, Tweet tweet) {
         String u = null; // get just the remote id
         Medium medium = null;
@@ -67,8 +79,19 @@ public class Medium extends Model {
         Medium medium = new Medium();
         try {
             medium.type = jsonObject.getString("type");
-            medium.url = jsonObject.getString("media_url");
+            medium.mediaUrl = jsonObject.getString("media_url");
+            medium.url = jsonObject.getString("url");
             medium.tweet = tweet;
+            if (jsonObject.has("video_info")) {
+                medium.videos = new HashMap<>();
+                JSONArray variants = jsonObject.getJSONObject("video_info").getJSONArray("variants");
+                for (int i = 0; i < variants.length(); i++) {
+                    JSONObject v = variants.getJSONObject(i);
+                    if (v.has("bitrate")) {
+                        medium.videos.put(v.getInt("bitrate"), v.getString("url"));
+                    }
+                }
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }

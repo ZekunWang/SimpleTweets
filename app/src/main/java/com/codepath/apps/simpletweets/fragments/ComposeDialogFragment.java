@@ -48,6 +48,8 @@ public class ComposeDialogFragment extends DialogFragment {
     @BindView(R.id.tvUsername) TextView tvUsername;
     private Unbinder unbinder;
     private Tweet tweet;
+    private Tweet retweetedStatus;
+    private Tweet targetTweet;
     private int requestCode;
     Activity activity;
 
@@ -94,7 +96,7 @@ public class ComposeDialogFragment extends DialogFragment {
             .into(ivProfile);
 
         tvUsername.setText(TimelineActivity.ACCOUNT.getName());
-        tvScreenName.setText(TimelineActivity.ACCOUNT.getScreenName());
+        tvScreenName.setText("@" + TimelineActivity.ACCOUNT.getScreenName());
 
         // Get Tweet and request code
         requestCode = getArguments().getInt("request_code");
@@ -102,13 +104,19 @@ public class ComposeDialogFragment extends DialogFragment {
         // Put hashtags before input
         if (requestCode == DetailsActivity.REQUEST_REPLY) {
             tweet = Parcels.unwrap(getArguments().getParcelable("tweet"));
+            retweetedStatus = tweet.getRetweetedStatus();
+            targetTweet = retweetedStatus != null ? retweetedStatus : tweet;
             // @ status user screen name
             StringBuilder sb = new StringBuilder("@")
-                .append(tweet.getUser().getScreenName())
+                .append(targetTweet.getUser().getScreenName())
                 .append(' ');
+            // @ retweet user's screen name
+            if (retweetedStatus != null) {
+                sb.append('@').append(tweet.getUser().getScreenName()).append(' ');
+            }
             // @ all mentioned user
-            for (String screenName : tweet.getUserMentions()) {
-                if (!screenName.equals(tweet.getUser().getScreenName())) {
+            for (String screenName : targetTweet.getUserMentions()) {
+                if (!screenName.equals(targetTweet.getUser().getScreenName())) {
                     sb.append("@").append(screenName).append(' ');
                 }
             }
@@ -123,7 +131,7 @@ public class ComposeDialogFragment extends DialogFragment {
 
             // Set notice TextView
             tvNotice.setVisibility(View.VISIBLE);
-            tvNotice.setText("Replying to " + tweet.getUser().getName());
+            tvNotice.setText("Replying to " + targetTweet.getUser().getName());
         }
 
         // Set text change listener

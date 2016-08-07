@@ -7,9 +7,11 @@ import com.activeandroid.query.Delete;
 import com.codepath.apps.simpletweets.BR;
 import com.codepath.apps.simpletweets.R;
 import com.codepath.apps.simpletweets.activities.DetailsActivity;
+import com.codepath.apps.simpletweets.activities.TimelineActivity;
 import com.codepath.apps.simpletweets.activities.TwitterApplication;
     import com.codepath.apps.simpletweets.activities.TwitterClient;
 import com.codepath.apps.simpletweets.databinding.ActivityDetailsBinding;
+import com.codepath.apps.simpletweets.databinding.ItemTweetBinding;
 import com.codepath.apps.simpletweets.fragments.ComposeDialogFragment;
     import com.codepath.apps.simpletweets.models.Medium;
     import com.codepath.apps.simpletweets.models.Tweet;
@@ -44,7 +46,7 @@ import java.util.regex.Pattern;
     import jp.wasabeef.glide.transformations.BlurTransformation;
     import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
-public class ContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+public class ContactsAdapter extends RecyclerView.Adapter<ViewHolder>{
 
         // Store a member variable for the contacts
         private List<Tweet> contacts;
@@ -52,9 +54,6 @@ public class ContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         private Context context;
         // Define listener member variable
         private static OnItemClickListener listener;
-
-        double width;
-        int height;
 
     // Define the listener interface
         public interface OnItemClickListener {
@@ -83,10 +82,10 @@ public class ContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         // Usually involves inflating a layout from XML and returning the holder
         @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            RecyclerView.ViewHolder viewHolder;
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            ViewHolder viewHolder;
             LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-                ViewDataBinding binding = DataBindingUtil.inflate(inflater, R.layout.item_tweet, parent, false);
+            ItemTweetBinding binding = DataBindingUtil.inflate(inflater, R.layout.item_tweet, parent, false);
             // distinguish view by viewType
             //View contactView = inflater.inflate(R.layout.item_tweet, parent, false);
             viewHolder = new ViewHolder(binding);
@@ -95,42 +94,86 @@ public class ContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         // Involves populating data into the item through holder
         @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+        public void onBindViewHolder(ViewHolder viewHolder, int position) {
             // get data item for position
             final Tweet tweet = contacts.get(position);
-            final ViewHolder vh = (ViewHolder) viewHolder;
-            // Add Tweet to the binding
-            vh.getBinding().setVariable(BR.tweet, tweet);
-            // Populate data
-       //     vh.getTvUsername().setText(tweet.getUser().getName());
-       //     vh.getTvScreenName().setText("@" + tweet.getUser().getScreenName());
-       //     vh.getTvRelativeTime().setText(ParseRelativeDate.getRelativeTimeAgo(tweet.getCreatedAt()));
-            vh.getTvBody().setText(tweet.getBody());
-       //     vh.getTvRetweetCount().setText("" + tweet.getRetweetCount());
-       //     vh.getTvFavoriteCount().setText("" + tweet.getFavoriteCount());
-       //     vh.getIvFavorite().setImageResource(tweet.isFavorited() ? R.drawable.ic_heart_lighted : R.drawable.ic_heart);
+            final Tweet retweetedStatus = tweet.getRetweetedStatus();
+            final Tweet targetTweet = retweetedStatus != null ? retweetedStatus : tweet;
+            // Get binding
+            final ItemTweetBinding binding = viewHolder.getBinding();
+
+            // Reset views
+            binding.ivMedia.setImageResource(0);
+            binding.ivMedia.setVisibility(View.GONE);
+            binding.ivNotice.setVisibility(View.GONE);
+            binding.tvNotice.setVisibility(View.GONE);
+
+            // Add Tweet to the binding and
+            binding.setTweet(targetTweet);
+
+            // Set retweeted status notice
+            if (retweetedStatus != null) {
+                binding.ivNotice.setVisibility(View.VISIBLE);
+                binding.tvNotice.setVisibility(View.VISIBLE);
+
+                if (TimelineActivity.ACCOUNT != null &&
+                    TimelineActivity.ACCOUNT.getName().equals(tweet.getUser().getName())) {
+                    binding.tvNotice.setText("You Retweeted");
+                } else {
+                    binding.tvNotice.setText(tweet.getUser().getName() + " Retweeted");
+                }
+            }
+
+            // Set Tweet content
+            binding.tvBody.setText(targetTweet.getBody());
 
             // Search for @ and #
-            HelperMethods.formatBody(getContext(), vh.getTvBody());
+            HelperMethods.formatBody(getContext(), binding.tvBody);
 
-            // Load profile image
-            Glide.with(getContext())
-                .load(tweet.getUser().getProfileImageUrl())
-                .placeholder(R.drawable.ic_launcher)
-                .bitmapTransform(new RoundedCornersTransformation(getContext(), 5, 0))
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(vh.getIvProfile());
+            // Inflate media
+            List<Medium> media = targetTweet.getMedia();
+            int width = (int) context.getResources().getDimension(R.dimen.item_media_width);
+            int height = (int) context.getResources().getDimension(R.dimen.item_media_height);
+            if (media != null) {
+                if (media.size() == 1) {
+                    binding.ivMedia.setVisibility(View.VISIBLE);
+                    Glide.with(context)
+                        .load(media.get(0).getMediaUrl())
+                        .override(width, height)
+                        .placeholder(R.drawable.ic_launcher_placeholder)
+                        .centerCrop()
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(binding.ivMedia);
+                } else {
+                    binding.tvBody.setPadding(0, 0, 0, (int) context.getResources().getDimension(R.dimen.item_content_margin));
+                }
+            } else {
+                binding.tvBody.setPadding(0, 0, 0, (int) context.getResources().getDimension(R.dimen.item_content_margin));
+            }
+
+            // Execute binding immediately
+            binding.executePendingBindings();
 
             // Set favorite listener
-            vh.getIvFavorite().setOnClickListener(new View.OnClickListener() {
+            binding.ivFavorite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     // Switch favorite
-                    HelperMethods.switchFavorite(tweet, vh.getIvFavorite(), vh.getTvFavoriteCount());
+                    HelperMethods.switchFavorite(tweet, binding.ivFavorite, binding.tvFavoriteCount);
                 }
             });
+
+            // Set retweet listener
+            binding.ivRetweet.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // Switch retweet
+                    HelperMethods.switchRetweet(tweet, binding.ivRetweet, binding.tvRetweetCount);
+                }
+            });
+
             // Set reply listener
-            vh.getIvReply().setOnClickListener(new View.OnClickListener() {
+            binding.ivReply.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     ComposeDialogFragment composeDialogFragment = ComposeDialogFragment.newInstance(
@@ -156,7 +199,6 @@ public class ContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 .execute();
             // Get media
             for (Tweet t : newTweets) {
-                Log.i("DEBUG", "has user ? " + (t.getUser() != null));
                 t.media = new Select()
                         .from(Medium.class)
                         .where("tweet = ?", t.getId())
@@ -166,6 +208,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
 
         public static void clearAll() {
+            new Delete().from(User.class).execute();
             new Delete().from(Tweet.class).execute();
             new Delete().from(Medium.class).execute();
         }

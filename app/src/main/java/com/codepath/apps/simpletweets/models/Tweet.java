@@ -3,6 +3,7 @@ package com.codepath.apps.simpletweets.models;
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
+import com.activeandroid.query.Select;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,6 +39,8 @@ public class Tweet extends Model {
     public boolean favorited;
     @Column(name = "retweeted")
     public boolean retweeted;
+    @Column(name = "retweeted_status")
+    public Tweet retweetedStatus;
 
     public Tweet() {
         super();
@@ -92,8 +95,41 @@ public class Tweet extends Model {
         }
     }
 
+    public void setRetweeted(boolean retweeted) {
+        this.retweeted = retweeted;
+        if (retweeted) {
+            retweetCount++;
+        } else {
+            retweetCount--;
+        }
+    }
+
+    public Tweet getRetweetedStatus() {
+        return retweetedStatus;
+    }
+
     public List<Medium> getMedia() {
         return media;
+    }
+
+    // Finds existing retweeted status based on tid or creates new retweeted status and returns
+    public static Tweet findOrCreateFromJson(JSONObject json) {
+        long tId = 0; // get just the remote id
+        Tweet tweet = null;
+
+        try {
+            tId = json.getLong("id");
+            // Search for duplicate
+            tweet = new Select().from(Tweet.class).where("tid = ?", tId).executeSingle();
+            if (tweet == null) {
+                // create and return new user
+                tweet = Tweet.fromJSONObject(json);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return tweet;
     }
 
     // Deserialize JSONObject and build Tweet object
@@ -118,6 +154,10 @@ public class Tweet extends Model {
             tweet.inReplyToStatusId = jsonObject.getString("in_reply_to_status_id_str");
             tweet.favorited = jsonObject.getBoolean("favorited");
             tweet.retweeted = jsonObject.getBoolean("retweeted");
+            // Get retweeted_status
+            if (jsonObject.has("retweeted_status")) {
+                tweet.retweetedStatus = Tweet.findOrCreateFromJson(jsonObject.getJSONObject("retweeted_status"));
+            }
 
             // Save Tweet before saving Mdeium
             tweet.save();

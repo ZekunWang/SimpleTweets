@@ -11,7 +11,7 @@ import org.parceler.Generated;
 import org.parceler.ParcelWrapper;
 import org.parceler.ParcelerRuntimeException;
 
-@Generated(value = "org.parceler.ParcelAnnotationProcessor", date = "2016-08-05T22:51-0500")
+@Generated(value = "org.parceler.ParcelAnnotationProcessor", date = "2016-08-07T00:06-0500")
 @SuppressWarnings({
     "unchecked",
     "deprecation"
@@ -43,6 +43,7 @@ public class User$$Parcelable
             } else {
                 parcel$$1 .writeInt(1);
                 parcel$$1 .writeLong(user$$1 .uid);
+                parcel$$1 .writeInt((user$$1 .following? 1 : 0));
                 parcel$$1 .writeString(user$$1 .name);
                 parcel$$1 .writeString(user$$1 .screenName);
                 parcel$$1 .writeString(user$$1 .profileImageUrl);
@@ -79,6 +80,7 @@ public class User$$Parcelable
             user$$5 = new com.codepath.apps.simpletweets.models.User();
             identityMap$$0 .put(identity$$1, user$$5);
             user$$5 .uid = parcel$$3 .readLong();
+            user$$5 .following = (parcel$$3 .readInt() == 1);
             user$$5 .name = parcel$$3 .readString();
             user$$5 .screenName = parcel$$3 .readString();
             user$$5 .profileImageUrl = parcel$$3 .readString();

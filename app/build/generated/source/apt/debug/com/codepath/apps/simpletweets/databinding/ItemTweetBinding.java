@@ -9,19 +9,27 @@ public class ItemTweetBinding extends android.databinding.ViewDataBinding  {
     static {
         sIncludes = null;
         sViewsWithIds = new android.util.SparseIntArray();
-        sViewsWithIds.put(R.id.tvBody, 9);
-        sViewsWithIds.put(R.id.ivReply, 10);
-        sViewsWithIds.put(R.id.ivMessage, 11);
+        sViewsWithIds.put(R.id.ivReference, 9);
+        sViewsWithIds.put(R.id.tvNotice, 10);
+        sViewsWithIds.put(R.id.ivNotice, 11);
+        sViewsWithIds.put(R.id.tvBody, 12);
+        sViewsWithIds.put(R.id.ivMedia, 13);
+        sViewsWithIds.put(R.id.ivReply, 14);
+        sViewsWithIds.put(R.id.ivMessage, 15);
     }
     // views
     public final android.widget.ImageView ivFavorite;
+    public final android.widget.ImageView ivMedia;
     public final android.widget.ImageView ivMessage;
+    public final android.widget.ImageView ivNotice;
     public final android.widget.ImageView ivProfile;
+    public final android.widget.ImageView ivReference;
     public final android.widget.ImageView ivReply;
     public final android.widget.ImageView ivRetweet;
     private final android.widget.RelativeLayout mboundView0;
     public final com.codepath.apps.simpletweets.others.LinkifiedTextView tvBody;
     public final android.widget.TextView tvFavoriteCount;
+    public final android.widget.TextView tvNotice;
     public final android.widget.TextView tvRelativeTime;
     public final android.widget.TextView tvRetweetCount;
     public final android.widget.TextView tvScreenName;
@@ -34,20 +42,24 @@ public class ItemTweetBinding extends android.databinding.ViewDataBinding  {
 
     public ItemTweetBinding(android.databinding.DataBindingComponent bindingComponent, View root) {
         super(bindingComponent, root, 0);
-        final Object[] bindings = mapBindings(bindingComponent, root, 12, sIncludes, sViewsWithIds);
+        final Object[] bindings = mapBindings(bindingComponent, root, 16, sIncludes, sViewsWithIds);
         this.ivFavorite = (android.widget.ImageView) bindings[7];
         this.ivFavorite.setTag(null);
-        this.ivMessage = (android.widget.ImageView) bindings[11];
+        this.ivMedia = (android.widget.ImageView) bindings[13];
+        this.ivMessage = (android.widget.ImageView) bindings[15];
+        this.ivNotice = (android.widget.ImageView) bindings[11];
         this.ivProfile = (android.widget.ImageView) bindings[1];
         this.ivProfile.setTag(null);
-        this.ivReply = (android.widget.ImageView) bindings[10];
+        this.ivReference = (android.widget.ImageView) bindings[9];
+        this.ivReply = (android.widget.ImageView) bindings[14];
         this.ivRetweet = (android.widget.ImageView) bindings[5];
         this.ivRetweet.setTag(null);
         this.mboundView0 = (android.widget.RelativeLayout) bindings[0];
         this.mboundView0.setTag(null);
-        this.tvBody = (com.codepath.apps.simpletweets.others.LinkifiedTextView) bindings[9];
+        this.tvBody = (com.codepath.apps.simpletweets.others.LinkifiedTextView) bindings[12];
         this.tvFavoriteCount = (android.widget.TextView) bindings[8];
         this.tvFavoriteCount.setTag(null);
+        this.tvNotice = (android.widget.TextView) bindings[10];
         this.tvRelativeTime = (android.widget.TextView) bindings[4];
         this.tvRelativeTime.setTag(null);
         this.tvRetweetCount = (android.widget.TextView) bindings[6];

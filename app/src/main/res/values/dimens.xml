@@ -6,15 +6,18 @@
     <dimen name="fab_margin">16dp</dimen>
 
     <dimen name="item_view_padding">10dp</dimen>
-    <dimen name="item_img_profile_margin">5dp</dimen>
+    <dimen name="item_img_profile_margin">10dp</dimen>
 
     <dimen name="item_text_username">16sp</dimen>
     <dimen name="item_text_relative_time">12sp</dimen>
 
+    <dimen name="item_icon_width">50dp</dimen>
     <dimen name="item_icon_margin">24dp</dimen>
     <dimen name="item_content_margin">34dp</dimen>
     <dimen name="item_icon_text_width">48dp</dimen>
     <dimen name="item_icon_text_height">24dp</dimen>
+    <dimen name="item_media_width">288dp</dimen>
+    <dimen name="item_media_height">162dp</dimen>
 
     <dimen name="button_height">36dp</dimen>
     <dimen name="button_width">60dp</dimen>

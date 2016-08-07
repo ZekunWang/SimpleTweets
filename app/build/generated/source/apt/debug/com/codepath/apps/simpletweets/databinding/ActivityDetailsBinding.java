@@ -16,8 +16,8 @@ public class ActivityDetailsBinding extends android.databinding.ViewDataBinding 
         sViewsWithIds.put(R.id.toolbar, 2);
     }
     // views
-    private final com.codepath.apps.simpletweets.databinding.ContentDetailsBinding mboundView0;
-    private final android.support.design.widget.CoordinatorLayout mboundView01;
+    public final com.codepath.apps.simpletweets.databinding.ContentDetailsBinding includeDetails;
+    private final android.support.design.widget.CoordinatorLayout mboundView0;
     public final android.support.v7.widget.Toolbar toolbar;
     // variables
     private com.codepath.apps.simpletweets.models.Tweet mTweet;
@@ -26,11 +26,11 @@ public class ActivityDetailsBinding extends android.databinding.ViewDataBinding 
     // Inverse Binding Event Handlers
 
     public ActivityDetailsBinding(android.databinding.DataBindingComponent bindingComponent, View root) {
-        super(bindingComponent, root, 0);
+        super(bindingComponent, root, 1);
         final Object[] bindings = mapBindings(bindingComponent, root, 3, sIncludes, sViewsWithIds);
-        this.mboundView0 = (com.codepath.apps.simpletweets.databinding.ContentDetailsBinding) bindings[1];
-        this.mboundView01 = (android.support.design.widget.CoordinatorLayout) bindings[0];
-        this.mboundView01.setTag(null);
+        this.includeDetails = (com.codepath.apps.simpletweets.databinding.ContentDetailsBinding) bindings[1];
+        this.mboundView0 = (android.support.design.widget.CoordinatorLayout) bindings[0];
+        this.mboundView0.setTag(null);
         this.toolbar = (android.support.v7.widget.Toolbar) bindings[2];
         setRootTag(root);
         // listeners
@@ -40,9 +40,9 @@ public class ActivityDetailsBinding extends android.databinding.ViewDataBinding 
     @Override
     public void invalidateAll() {
         synchronized(this) {
-                mDirtyFlags = 0x2L;
+                mDirtyFlags = 0x4L;
         }
-        mboundView0.invalidateAll();
+        includeDetails.invalidateAll();
         requestRebind();
     }
 
@@ -53,7 +53,7 @@ public class ActivityDetailsBinding extends android.databinding.ViewDataBinding 
                 return true;
             }
         }
-        if (mboundView0.hasPendingBindings()) {
+        if (includeDetails.hasPendingBindings()) {
             return true;
         }
         return false;
@@ -71,7 +71,7 @@ public class ActivityDetailsBinding extends android.databinding.ViewDataBinding 
     public void setTweet(com.codepath.apps.simpletweets.models.Tweet tweet) {
         this.mTweet = tweet;
         synchronized(this) {
-            mDirtyFlags |= 0x1L;
+            mDirtyFlags |= 0x2L;
         }
         notifyPropertyChanged(BR.tweet);
         super.requestRebind();
@@ -83,6 +83,19 @@ public class ActivityDetailsBinding extends android.databinding.ViewDataBinding 
     @Override
     protected boolean onFieldChange(int localFieldId, Object object, int fieldId) {
         switch (localFieldId) {
+            case 0 :
+                return onChangeIncludeDetai((com.codepath.apps.simpletweets.databinding.ContentDetailsBinding) object, fieldId);
+        }
+        return false;
+    }
+    private boolean onChangeIncludeDetai(com.codepath.apps.simpletweets.databinding.ContentDetailsBinding includeDetails, int fieldId) {
+        switch (fieldId) {
+            case BR._all: {
+                synchronized(this) {
+                        mDirtyFlags |= 0x1L;
+                }
+                return true;
+            }
         }
         return false;
     }
@@ -96,15 +109,15 @@ public class ActivityDetailsBinding extends android.databinding.ViewDataBinding 
         }
         com.codepath.apps.simpletweets.models.Tweet tweet = mTweet;
 
-        if ((dirtyFlags & 0x3L) != 0) {
+        if ((dirtyFlags & 0x6L) != 0) {
         }
         // batch finished
-        if ((dirtyFlags & 0x3L) != 0) {
+        if ((dirtyFlags & 0x6L) != 0) {
             // api target 1
 
-            this.mboundView0.setTweet(tweet);
+            this.includeDetails.setTweet(tweet);
         }
-        mboundView0.executePendingBindings();
+        includeDetails.executePendingBindings();
     }
     // Listener Stub Implementations
     // callback impls
@@ -133,8 +146,9 @@ public class ActivityDetailsBinding extends android.databinding.ViewDataBinding 
         return new ActivityDetailsBinding(bindingComponent, view);
     }
     /* flag mapping
-        flag 0 (0x1L): tweet
-        flag 1 (0x2L): null
+        flag 0 (0x1L): includeDetails
+        flag 1 (0x2L): tweet
+        flag 2 (0x3L): null
     flag mapping end*/
     //end
 }

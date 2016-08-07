@@ -183,8 +183,10 @@ public class HelperMethods {
     }
 
     public static void switchFavorite(final Tweet tweet, final ImageView ivFavorite, final TextView tvFavoriteCount) {
+        final Tweet retweetedStatus = tweet.getRetweetedStatus();
+        final Tweet targetTweet = retweetedStatus != null ? retweetedStatus : tweet;
         TwitterClient client = TwitterApplication.getRestClient();
-        if (tweet.isFavorited()) {
+        if (targetTweet.isFavorited()) {
             client.unSetFavorite(tweet, new JsonHttpResponseHandler(){
                 // SUCCESS
                 @Override
@@ -192,11 +194,11 @@ public class HelperMethods {
                     Tweet newTweet = Tweet.fromJSONObject(jsonObject);
                     if (newTweet != null) {
                         // Reverse favorited status
-                        tweet.setFavorited(false);
+                        targetTweet.setFavorited(false);
                         // Switch icon
                         ivFavorite.setImageResource(R.drawable.ic_heart);
                         // Update favoriteCount
-                        tvFavoriteCount.setText("" + tweet.getFavoriteCount());
+                        tvFavoriteCount.setText("" + targetTweet.getFavoriteCount());
                     }
                 }
 
@@ -217,11 +219,11 @@ public class HelperMethods {
                     Tweet newTweet = Tweet.fromJSONObject(jsonObject);
                     if (newTweet != null) {
                         // Reverse favorited status
-                        tweet.setFavorited(true);
+                        targetTweet.setFavorited(true);
                         // Switch icon
                         ivFavorite.setImageResource(R.drawable.ic_heart_lighted);
                         // Update favoriteCount
-                        tvFavoriteCount.setText("" + tweet.getFavoriteCount());
+                        tvFavoriteCount.setText("" + targetTweet.getFavoriteCount());
                     }
                 }
 
@@ -231,6 +233,63 @@ public class HelperMethods {
                     JSONObject errorResponse) {
                     if (errorResponse != null) {
                         Log.d("DEBUG", "Set Favorite Error: " + errorResponse.toString());
+                    }
+                }
+            });
+        }
+    }
+
+    public static void switchRetweet(final Tweet tweet, final ImageView ivRetweet, final TextView tvRetweetCount) {
+        final Tweet retweetedStatus = tweet.getRetweetedStatus();
+        final Tweet targetTweet = retweetedStatus != null ? retweetedStatus : tweet;
+        TwitterClient client = TwitterApplication.getRestClient();
+        if (targetTweet.isRetweeted()) {
+            client.unSetRetweet(tweet, new JsonHttpResponseHandler(){
+                // SUCCESS
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject jsonObject) {
+                    Tweet newTweet = Tweet.fromJSONObject(jsonObject);
+                    if (newTweet != null) {
+                        // Reverse favorited status
+                        targetTweet.setRetweeted(false);
+                        // Switch icon
+                        ivRetweet.setImageResource(R.drawable.ic_twitter_retweet);
+                        // Update favoriteCount
+                        tvRetweetCount.setText("" + targetTweet.getRetweetCount());
+                    }
+                }
+
+                // FAILURE
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable,
+                    JSONObject errorResponse) {
+                    if (errorResponse != null) {
+                        Log.d("DEBUG", "Unset Retweet Error: " + errorResponse.toString());
+                    }
+                }
+            });
+        } else {
+            client.setRetweet(tweet, new JsonHttpResponseHandler(){
+                // SUCCESS
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject jsonObject) {
+                    Tweet newTweet = Tweet.fromJSONObject(jsonObject);
+                    if (newTweet != null) {
+                        // Reverse favorited status
+                        targetTweet.setRetweeted(true);
+                        // Switch icon
+                        ivRetweet.setImageResource(R.drawable.ic_twitter_retweet_lighted);
+                        // Update favoriteCount
+                        tvRetweetCount.setText("" + targetTweet.getRetweetCount());
+                    }
+                }
+
+                // FAILURE
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable,
+                    JSONObject errorResponse) {
+                    if (errorResponse != null) {
+                        Log.d("DEBUG", "Set Retweet Error: " + errorResponse.toString());
                     }
                 }
             });

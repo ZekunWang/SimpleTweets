@@ -48,12 +48,16 @@ The following **additional** features are implemented:
 * [x] Floating action bar reacts to scroll
 * [x] Reply button reacts to reply input
 * [x] Fast reply can expand and jump to reply page
+* [x] Click to post favorite
+* [x] Click to post retweet
+* [x] Multiple reply trigger options
+* [x] Click to share link
 
 ## Video Walkthrough
 
 Here's a walkthrough of implemented user stories:
 
-![Video Walkthrough](SimpleTweets_v2.gif)
+![Video Walkthrough](SimpleTweets_v3.gif)
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 

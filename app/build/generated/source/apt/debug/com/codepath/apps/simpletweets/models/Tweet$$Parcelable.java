@@ -13,7 +13,7 @@ import org.parceler.Generated;
 import org.parceler.ParcelWrapper;
 import org.parceler.ParcelerRuntimeException;
 
-@Generated(value = "org.parceler.ParcelAnnotationProcessor", date = "2016-08-05T22:51-0500")
+@Generated(value = "org.parceler.ParcelAnnotationProcessor", date = "2016-08-07T00:06-0500")
 @SuppressWarnings({
     "unchecked",
     "deprecation"
@@ -46,6 +46,7 @@ public class Tweet$$Parcelable
                 parcel$$1 .writeInt(1);
                 parcel$$1 .writeString(tweet$$1 .createdAt);
                 parcel$$1 .writeString(tweet$$1 .inReplyToStatusId);
+                com.codepath.apps.simpletweets.models.Tweet$$Parcelable.write(tweet$$1 .retweetedStatus, parcel$$1, flags$$0, identitySet$$0);
                 if (tweet$$1 .media == null) {
                     parcel$$1 .writeInt(-1);
                 } else {
@@ -103,6 +104,8 @@ public class Tweet$$Parcelable
             identityMap$$0 .put(identity$$1, tweet$$5);
             tweet$$5 .createdAt = parcel$$3 .readString();
             tweet$$5 .inReplyToStatusId = parcel$$3 .readString();
+            com.codepath.apps.simpletweets.models.Tweet tweet$$6 = com.codepath.apps.simpletweets.models.Tweet$$Parcelable.read(parcel$$3, identityMap$$0);
+            tweet$$5 .retweetedStatus = tweet$$6;
             int int$$0 = parcel$$3 .readInt();
             ArrayList<com.codepath.apps.simpletweets.models.Medium> list$$0;
             if (int$$0 < 0) {

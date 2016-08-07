@@ -204,12 +204,12 @@
         "source": "C:\\Users\\zwang_000\\AndroidStudioProjects\\SimpleTweets\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.1.1\\res\\layout\\select_dialog_item_material.xml"
     },
     {
-        "merged": "C:\\Users\\zwang_000\\AndroidStudioProjects\\SimpleTweets\\app\\build\\intermediates\\res\\merged\\debug\\layout\\content_timeline.xml",
-        "source": "C:\\Users\\zwang_000\\AndroidStudioProjects\\SimpleTweets\\app\\src\\main\\res\\layout\\content_timeline.xml"
-    },
-    {
         "merged": "C:\\Users\\zwang_000\\AndroidStudioProjects\\SimpleTweets\\app\\build\\intermediates\\res\\merged\\debug\\layout\\activity_timeline.xml",
         "source": "C:\\Users\\zwang_000\\AndroidStudioProjects\\SimpleTweets\\app\\src\\main\\res\\layout\\activity_timeline.xml"
+    },
+    {
+        "merged": "C:\\Users\\zwang_000\\AndroidStudioProjects\\SimpleTweets\\app\\build\\intermediates\\res\\merged\\debug\\layout\\content_timeline.xml",
+        "source": "C:\\Users\\zwang_000\\AndroidStudioProjects\\SimpleTweets\\app\\src\\main\\res\\layout\\content_timeline.xml"
     },
     {
         "merged": "C:\\Users\\zwang_000\\AndroidStudioProjects\\SimpleTweets\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_search_view.xml",

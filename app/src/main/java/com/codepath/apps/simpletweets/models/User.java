@@ -22,6 +22,8 @@ public class User extends Model {
     public String screenName;
     @Column(name = "profile_image_url")
     public String profileImageUrl;
+    @Column(name = "following")
+    public boolean following;
 
     public User() {
         super();
@@ -43,7 +45,11 @@ public class User extends Model {
         return profileImageUrl;
     }
 
-    // Finds existing user based on remoteId or creates new user and returns
+    public boolean isFollowing() {
+        return following;
+    }
+
+    // Finds existing user based on uid or creates new user and returns
     public static User findOrCreateFromJson(JSONObject json) {
         long rId = 0; // get just the remote id
         User user = null;
@@ -73,6 +79,7 @@ public class User extends Model {
             user.uid = jsonObject.getLong("id");
             user.screenName = jsonObject.getString("screen_name");
             user.profileImageUrl = jsonObject.getString("profile_image_url");
+            user.following = jsonObject.getBoolean("following");
         } catch (JSONException e) {
             e.printStackTrace();
         }

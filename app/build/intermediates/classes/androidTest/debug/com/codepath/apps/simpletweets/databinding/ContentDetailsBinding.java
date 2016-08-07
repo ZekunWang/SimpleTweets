@@ -9,22 +9,28 @@ public class ContentDetailsBinding extends android.databinding.ViewDataBinding  
     static {
         sIncludes = null;
         sViewsWithIds = new android.util.SparseIntArray();
-        sViewsWithIds.put(R.id.rlReply, 9);
-        sViewsWithIds.put(R.id.btnCompose, 10);
-        sViewsWithIds.put(R.id.tvAvailableChars, 11);
-        sViewsWithIds.put(R.id.svDetails, 12);
-        sViewsWithIds.put(R.id.tvBody, 13);
-        sViewsWithIds.put(R.id.ivMedia, 14);
-        sViewsWithIds.put(R.id.tvRetweet, 15);
-        sViewsWithIds.put(R.id.ivReply, 16);
+        sViewsWithIds.put(R.id.rlReply, 10);
+        sViewsWithIds.put(R.id.btnCompose, 11);
+        sViewsWithIds.put(R.id.tvAvailableChars, 12);
+        sViewsWithIds.put(R.id.svDetails, 13);
+        sViewsWithIds.put(R.id.ivReference, 14);
+        sViewsWithIds.put(R.id.tvNotice, 15);
+        sViewsWithIds.put(R.id.ivNotice, 16);
+        sViewsWithIds.put(R.id.tvBody, 17);
+        sViewsWithIds.put(R.id.ivMedia, 18);
+        sViewsWithIds.put(R.id.tvRetweet, 19);
+        sViewsWithIds.put(R.id.ivReply, 20);
     }
     // views
     public final android.widget.Button btnCompose;
     public final android.widget.EditText etReply;
     public final android.widget.ImageView ivFavorite;
     public final android.widget.ImageView ivMedia;
+    public final android.widget.ImageView ivNotice;
     public final android.widget.ImageView ivProfile;
+    public final android.widget.ImageView ivReference;
     public final android.widget.ImageView ivReply;
+    public final android.widget.ImageView ivRetweet;
     private final android.widget.RelativeLayout mboundView0;
     public final android.widget.RelativeLayout rlReply;
     public final android.widget.ScrollView svDetails;
@@ -32,6 +38,7 @@ public class ContentDetailsBinding extends android.databinding.ViewDataBinding  
     public final android.widget.TextView tvAvailableChars;
     public final com.codepath.apps.simpletweets.others.LinkifiedTextView tvBody;
     public final android.widget.TextView tvFavoriteCount;
+    public final android.widget.TextView tvNotice;
     public final android.widget.TextView tvRetweet;
     public final android.widget.TextView tvRetweetCount;
     public final android.widget.TextView tvScreenName;
@@ -44,27 +51,32 @@ public class ContentDetailsBinding extends android.databinding.ViewDataBinding  
 
     public ContentDetailsBinding(android.databinding.DataBindingComponent bindingComponent, View root) {
         super(bindingComponent, root, 0);
-        final Object[] bindings = mapBindings(bindingComponent, root, 17, sIncludes, sViewsWithIds);
-        this.btnCompose = (android.widget.Button) bindings[10];
+        final Object[] bindings = mapBindings(bindingComponent, root, 21, sIncludes, sViewsWithIds);
+        this.btnCompose = (android.widget.Button) bindings[11];
         this.etReply = (android.widget.EditText) bindings[1];
         this.etReply.setTag(null);
-        this.ivFavorite = (android.widget.ImageView) bindings[8];
+        this.ivFavorite = (android.widget.ImageView) bindings[9];
         this.ivFavorite.setTag(null);
-        this.ivMedia = (android.widget.ImageView) bindings[14];
+        this.ivMedia = (android.widget.ImageView) bindings[18];
+        this.ivNotice = (android.widget.ImageView) bindings[16];
         this.ivProfile = (android.widget.ImageView) bindings[2];
         this.ivProfile.setTag(null);
-        this.ivReply = (android.widget.ImageView) bindings[16];
+        this.ivReference = (android.widget.ImageView) bindings[14];
+        this.ivReply = (android.widget.ImageView) bindings[20];
+        this.ivRetweet = (android.widget.ImageView) bindings[8];
+        this.ivRetweet.setTag(null);
         this.mboundView0 = (android.widget.RelativeLayout) bindings[0];
         this.mboundView0.setTag(null);
-        this.rlReply = (android.widget.RelativeLayout) bindings[9];
-        this.svDetails = (android.widget.ScrollView) bindings[12];
+        this.rlReply = (android.widget.RelativeLayout) bindings[10];
+        this.svDetails = (android.widget.ScrollView) bindings[13];
         this.tvAbsoluteTime = (android.widget.TextView) bindings[5];
         this.tvAbsoluteTime.setTag(null);
-        this.tvAvailableChars = (android.widget.TextView) bindings[11];
-        this.tvBody = (com.codepath.apps.simpletweets.others.LinkifiedTextView) bindings[13];
+        this.tvAvailableChars = (android.widget.TextView) bindings[12];
+        this.tvBody = (com.codepath.apps.simpletweets.others.LinkifiedTextView) bindings[17];
         this.tvFavoriteCount = (android.widget.TextView) bindings[7];
         this.tvFavoriteCount.setTag(null);
-        this.tvRetweet = (android.widget.TextView) bindings[15];
+        this.tvNotice = (android.widget.TextView) bindings[15];
+        this.tvRetweet = (android.widget.TextView) bindings[19];
         this.tvRetweetCount = (android.widget.TextView) bindings[6];
         this.tvRetweetCount.setTag(null);
         this.tvScreenName = (android.widget.TextView) bindings[4];
@@ -134,11 +146,13 @@ public class ContentDetailsBinding extends android.databinding.ViewDataBinding  
         java.lang.String stringReplyToTweetGe = null;
         int tweetGetFavoriteCoun = 0;
         com.codepath.apps.simpletweets.models.User tweetGetUserTweet = null;
+        boolean tweetIsRetweetedTwee = false;
         com.codepath.apps.simpletweets.models.Tweet tweet = mTweet;
         java.lang.String stringTweetGetFavori = null;
         java.lang.String tweetGetUserTweetGet1 = null;
         java.lang.String tweetGetUserTweetGet2 = null;
         boolean tweetIsFavoritedTwee1 = false;
+        android.graphics.drawable.Drawable TweetIsRetweetedTwee1 = null;
         int tweetGetRetweetCount = 0;
         java.lang.String tweetGetCreatedAtTwe = null;
         java.lang.String stringTweetGetRetwee = null;
@@ -152,6 +166,8 @@ public class ContentDetailsBinding extends android.databinding.ViewDataBinding  
                     tweetGetFavoriteCoun = tweet.getFavoriteCount();
                     // read tweet.getUser()
                     tweetGetUserTweet = tweet.getUser();
+                    // read tweet.isRetweeted()
+                    tweetIsRetweetedTwee = tweet.isRetweeted();
                     // read tweet.isFavorited()
                     tweetIsFavoritedTwee1 = tweet.isFavorited();
                     // read tweet.getRetweetCount()
@@ -159,6 +175,12 @@ public class ContentDetailsBinding extends android.databinding.ViewDataBinding  
                     // read tweet.getCreatedAt()
                     tweetGetCreatedAtTwe = tweet.getCreatedAt();
                 }
+                if((dirtyFlags & 0x3L) != 0) {
+                    if (tweetIsRetweetedTwee) {
+                        dirtyFlags |= 0x20L;
+                    } else {
+                        dirtyFlags |= 0x10L;
+                    }}
                 if((dirtyFlags & 0x3L) != 0) {
                     if (tweetIsFavoritedTwee1) {
                         dirtyFlags |= 0x8L;
@@ -169,6 +191,8 @@ public class ContentDetailsBinding extends android.databinding.ViewDataBinding  
 
                 // read ("") + (tweet.getFavoriteCount())
                 stringTweetGetFavori = ("") + (tweetGetFavoriteCoun);
+                // read tweet.isRetweeted() ? @android:drawable/ic_twitter_retweet_lighted : @android:drawable/ic_twitter_retweet
+                TweetIsRetweetedTwee1 = (tweetIsRetweetedTwee) ? (getDrawableFromResource(R.drawable.ic_twitter_retweet_lighted)) : (getDrawableFromResource(R.drawable.ic_twitter_retweet));
                 // read tweet.isFavorited() ? @android:drawable/ic_heart_lighted : @android:drawable/ic_heart
                 tweetIsFavoritedTwee = (tweetIsFavoritedTwee1) ? (getDrawableFromResource(R.drawable.ic_heart_lighted)) : (getDrawableFromResource(R.drawable.ic_heart));
                 // read ("") + (tweet.getRetweetCount())
@@ -193,6 +217,7 @@ public class ContentDetailsBinding extends android.databinding.ViewDataBinding  
             this.etReply.setHint(stringReplyToTweetGe);
             android.databinding.adapters.ImageViewBindingAdapter.setImageDrawable(this.ivFavorite, tweetIsFavoritedTwee);
             com.codepath.apps.simpletweets.adapters.BindingAdapterUtils.loadImage(this.ivProfile, tweetGetUserTweetGet);
+            android.databinding.adapters.ImageViewBindingAdapter.setImageDrawable(this.ivRetweet, TweetIsRetweetedTwee1);
             com.codepath.apps.simpletweets.adapters.BindingAdapterUtils.loadTime(this.tvAbsoluteTime, tweetGetCreatedAtTwe);
             android.databinding.adapters.TextViewBindingAdapter.setText(this.tvFavoriteCount, stringTweetGetFavori);
             android.databinding.adapters.TextViewBindingAdapter.setText(this.tvRetweetCount, stringTweetGetRetwee);
@@ -231,6 +256,8 @@ public class ContentDetailsBinding extends android.databinding.ViewDataBinding  
         flag 1 (0x2L): null
         flag 2 (0x3L): tweet.isFavorited() ? @android:drawable/ic_heart_lighted : @android:drawable/ic_heart
         flag 3 (0x4L): tweet.isFavorited() ? @android:drawable/ic_heart_lighted : @android:drawable/ic_heart
+        flag 4 (0x5L): tweet.isRetweeted() ? @android:drawable/ic_twitter_retweet_lighted : @android:drawable/ic_twitter_retweet
+        flag 5 (0x6L): tweet.isRetweeted() ? @android:drawable/ic_twitter_retweet_lighted : @android:drawable/ic_twitter_retweet
     flag mapping end*/
     //end
 }
