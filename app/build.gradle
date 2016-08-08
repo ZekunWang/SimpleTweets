@@ -69,4 +69,7 @@ dependencies {
     compile "com.android.support:animated-vector-drawable:24.0.0" // AnimatedVectorDrawableCompat
     // for Video-Player-Manager
     compile 'com.github.danylovolokh:video-player-manager:0.2.0'
+    compile 'com.github.danylovolokh:list-visibility-utils:0.2.0'
+    // for Android-ScalableVideoView
+    compile 'com.yqritc:android-scalablevideoview:1.0.4'
 }

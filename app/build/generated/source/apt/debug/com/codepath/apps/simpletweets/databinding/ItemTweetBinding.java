@@ -14,8 +14,9 @@ public class ItemTweetBinding extends android.databinding.ViewDataBinding  {
         sViewsWithIds.put(R.id.ivNotice, 11);
         sViewsWithIds.put(R.id.tvBody, 12);
         sViewsWithIds.put(R.id.ivMedia, 13);
-        sViewsWithIds.put(R.id.ivReply, 14);
-        sViewsWithIds.put(R.id.ivMessage, 15);
+        sViewsWithIds.put(R.id.vvMedia, 14);
+        sViewsWithIds.put(R.id.ivReply, 15);
+        sViewsWithIds.put(R.id.ivMessage, 16);
     }
     // views
     public final android.widget.ImageView ivFavorite;
@@ -34,6 +35,7 @@ public class ItemTweetBinding extends android.databinding.ViewDataBinding  {
     public final android.widget.TextView tvRetweetCount;
     public final android.widget.TextView tvScreenName;
     public final android.widget.TextView tvUsername;
+    public final com.yqritc.scalablevideoview.ScalableVideoView vvMedia;
     // variables
     private com.codepath.apps.simpletweets.models.Tweet mTweet;
     // values
@@ -42,16 +44,16 @@ public class ItemTweetBinding extends android.databinding.ViewDataBinding  {
 
     public ItemTweetBinding(android.databinding.DataBindingComponent bindingComponent, View root) {
         super(bindingComponent, root, 0);
-        final Object[] bindings = mapBindings(bindingComponent, root, 16, sIncludes, sViewsWithIds);
+        final Object[] bindings = mapBindings(bindingComponent, root, 17, sIncludes, sViewsWithIds);
         this.ivFavorite = (android.widget.ImageView) bindings[7];
         this.ivFavorite.setTag(null);
         this.ivMedia = (android.widget.ImageView) bindings[13];
-        this.ivMessage = (android.widget.ImageView) bindings[15];
+        this.ivMessage = (android.widget.ImageView) bindings[16];
         this.ivNotice = (android.widget.ImageView) bindings[11];
         this.ivProfile = (android.widget.ImageView) bindings[1];
         this.ivProfile.setTag(null);
         this.ivReference = (android.widget.ImageView) bindings[9];
-        this.ivReply = (android.widget.ImageView) bindings[14];
+        this.ivReply = (android.widget.ImageView) bindings[15];
         this.ivRetweet = (android.widget.ImageView) bindings[5];
         this.ivRetweet.setTag(null);
         this.mboundView0 = (android.widget.RelativeLayout) bindings[0];
@@ -68,6 +70,7 @@ public class ItemTweetBinding extends android.databinding.ViewDataBinding  {
         this.tvScreenName.setTag(null);
         this.tvUsername = (android.widget.TextView) bindings[2];
         this.tvUsername.setTag(null);
+        this.vvMedia = (com.yqritc.scalablevideoview.ScalableVideoView) bindings[14];
         setRootTag(root);
         // listeners
         invalidateAll();

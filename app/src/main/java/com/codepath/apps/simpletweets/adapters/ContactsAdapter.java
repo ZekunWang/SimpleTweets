@@ -21,15 +21,19 @@ import com.codepath.apps.simpletweets.others.HelperMethods;
 import com.codepath.apps.simpletweets.others.ParseRelativeDate;
     import com.codepath.apps.simpletweets.others.PatternEditableBuilder;
     import com.loopj.android.http.JsonHttpResponseHandler;
+import com.yqritc.scalablevideoview.ScalableType;
+import com.yqritc.scalablevideoview.ScalableVideoView;
 
-    import org.json.JSONObject;
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
 import android.graphics.Color;
-    import android.support.v4.content.ContextCompat;
+import android.media.MediaPlayer;
+import android.net.Uri;
+import android.support.v4.content.ContextCompat;
     import android.support.v7.widget.RecyclerView;
     import android.util.DisplayMetrics;
     import android.util.Log;
@@ -38,6 +42,7 @@ import android.graphics.Color;
     import android.view.ViewGroup;
     import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -105,6 +110,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ViewHolder>{
             // Reset views
             binding.ivMedia.setImageResource(0);
             binding.ivMedia.setVisibility(View.GONE);
+            binding.vvMedia.setVisibility(View.GONE);
             binding.ivNotice.setVisibility(View.GONE);
             binding.tvNotice.setVisibility(View.GONE);
 
@@ -113,8 +119,8 @@ public class ContactsAdapter extends RecyclerView.Adapter<ViewHolder>{
 
             // Set retweeted status notice
             if (retweetedStatus != null) {
-                binding.ivNotice.setVisibility(View.VISIBLE);
                 binding.tvNotice.setVisibility(View.VISIBLE);
+                binding.ivNotice.setVisibility(View.VISIBLE);
 
                 if (TimelineActivity.ACCOUNT != null &&
                     TimelineActivity.ACCOUNT.getName().equals(tweet.getUser().getName())) {
@@ -134,18 +140,22 @@ public class ContactsAdapter extends RecyclerView.Adapter<ViewHolder>{
             List<Medium> media = targetTweet.getMedia();
             int width = (int) context.getResources().getDimension(R.dimen.item_media_width);
             int height = (int) context.getResources().getDimension(R.dimen.item_media_height);
-            if (media != null) {
-                if (media.size() == 1) {
-                    binding.ivMedia.setVisibility(View.VISIBLE);
-                    Glide.with(context)
-                        .load(media.get(0).getMediaUrl())
-                        .override(width, height)
-                        .placeholder(R.drawable.ic_launcher_placeholder)
-                        .centerCrop()
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(binding.ivMedia);
-                } else {
-                    binding.tvBody.setPadding(0, 0, 0, (int) context.getResources().getDimension(R.dimen.item_content_margin));
+            if (media != null && media.size() > 0) {
+                binding.ivMedia.setVisibility(View.VISIBLE);
+                Glide.with(context)
+                    .load(media.get(0).getMediaUrl())
+                    .override(width, height)
+                    .placeholder(R.drawable.ic_launcher_placeholder)
+                    .centerCrop()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(binding.ivMedia);
+
+                // Get video
+                final String videos = media.get(0).getVideos();
+                if (videos != null) {
+                    binding.vvMedia.setVisibility(View.VISIBLE);
+                    // Play video
+                    HelperMethods.playVideo(context, binding.vvMedia, null, videos);
                 }
             } else {
                 binding.tvBody.setPadding(0, 0, 0, (int) context.getResources().getDimension(R.dimen.item_content_margin));

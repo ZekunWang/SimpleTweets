@@ -10,7 +10,7 @@ import com.codepath.apps.simpletweets.models.Tweet$$Parcelable;
 import com.codepath.apps.simpletweets.models.User;
 import com.codepath.apps.simpletweets.models.User$$Parcelable;
 
-@Generated(value = "org.parceler.ParcelAnnotationProcessor", date = "2016-08-07T00:06-0500")
+@Generated(value = "org.parceler.ParcelAnnotationProcessor", date = "2016-08-07T19:47-0500")
 @SuppressWarnings({
     "unchecked",
     "deprecation"
@@ -22,9 +22,9 @@ public class Parceler$$Parcels
     private final Map<Class, org.parceler.Parcels.ParcelableFactory> map$$0 = new HashMap<Class, org.parceler.Parcels.ParcelableFactory>();
 
     public Parceler$$Parcels() {
-        map$$0 .put(User.class, new Parceler$$Parcels.User$$Parcelable$$0());
-        map$$0 .put(Medium.class, new Parceler$$Parcels.Medium$$Parcelable$$0());
         map$$0 .put(Tweet.class, new Parceler$$Parcels.Tweet$$Parcelable$$0());
+        map$$0 .put(Medium.class, new Parceler$$Parcels.Medium$$Parcelable$$0());
+        map$$0 .put(User.class, new Parceler$$Parcels.User$$Parcelable$$0());
     }
 
     public Map<Class, org.parceler.Parcels.ParcelableFactory> get() {

@@ -17,14 +17,18 @@ public class ContentDetailsBinding extends android.databinding.ViewDataBinding  
         sViewsWithIds.put(R.id.tvNotice, 15);
         sViewsWithIds.put(R.id.ivNotice, 16);
         sViewsWithIds.put(R.id.tvBody, 17);
-        sViewsWithIds.put(R.id.ivMedia, 18);
-        sViewsWithIds.put(R.id.tvRetweet, 19);
-        sViewsWithIds.put(R.id.ivReply, 20);
-        sViewsWithIds.put(R.id.ivShare, 21);
+        sViewsWithIds.put(R.id.rlMedia, 18);
+        sViewsWithIds.put(R.id.ivMedia, 19);
+        sViewsWithIds.put(R.id.vvMedia, 20);
+        sViewsWithIds.put(R.id.ivButtonImage, 21);
+        sViewsWithIds.put(R.id.tvRetweet, 22);
+        sViewsWithIds.put(R.id.ivReply, 23);
+        sViewsWithIds.put(R.id.ivShare, 24);
     }
     // views
     public final android.widget.Button btnCompose;
     public final android.widget.EditText etReply;
+    public final android.widget.ImageView ivButtonImage;
     public final android.widget.ImageView ivFavorite;
     public final android.widget.ImageView ivMedia;
     public final android.widget.ImageView ivNotice;
@@ -34,6 +38,7 @@ public class ContentDetailsBinding extends android.databinding.ViewDataBinding  
     public final android.widget.ImageView ivRetweet;
     public final android.widget.ImageView ivShare;
     private final android.widget.RelativeLayout mboundView0;
+    public final android.widget.RelativeLayout rlMedia;
     public final android.widget.RelativeLayout rlReply;
     public final android.widget.ScrollView svDetails;
     public final android.widget.TextView tvAbsoluteTime;
@@ -45,6 +50,7 @@ public class ContentDetailsBinding extends android.databinding.ViewDataBinding  
     public final android.widget.TextView tvRetweetCount;
     public final android.widget.TextView tvScreenName;
     public final android.widget.TextView tvUsername;
+    public final com.yqritc.scalablevideoview.ScalableVideoView vvMedia;
     // variables
     private com.codepath.apps.simpletweets.models.Tweet mTweet;
     // values
@@ -53,23 +59,25 @@ public class ContentDetailsBinding extends android.databinding.ViewDataBinding  
 
     public ContentDetailsBinding(android.databinding.DataBindingComponent bindingComponent, View root) {
         super(bindingComponent, root, 0);
-        final Object[] bindings = mapBindings(bindingComponent, root, 22, sIncludes, sViewsWithIds);
+        final Object[] bindings = mapBindings(bindingComponent, root, 25, sIncludes, sViewsWithIds);
         this.btnCompose = (android.widget.Button) bindings[11];
         this.etReply = (android.widget.EditText) bindings[1];
         this.etReply.setTag(null);
+        this.ivButtonImage = (android.widget.ImageView) bindings[21];
         this.ivFavorite = (android.widget.ImageView) bindings[9];
         this.ivFavorite.setTag(null);
-        this.ivMedia = (android.widget.ImageView) bindings[18];
+        this.ivMedia = (android.widget.ImageView) bindings[19];
         this.ivNotice = (android.widget.ImageView) bindings[16];
         this.ivProfile = (android.widget.ImageView) bindings[2];
         this.ivProfile.setTag(null);
         this.ivReference = (android.widget.ImageView) bindings[14];
-        this.ivReply = (android.widget.ImageView) bindings[20];
+        this.ivReply = (android.widget.ImageView) bindings[23];
         this.ivRetweet = (android.widget.ImageView) bindings[8];
         this.ivRetweet.setTag(null);
-        this.ivShare = (android.widget.ImageView) bindings[21];
+        this.ivShare = (android.widget.ImageView) bindings[24];
         this.mboundView0 = (android.widget.RelativeLayout) bindings[0];
         this.mboundView0.setTag(null);
+        this.rlMedia = (android.widget.RelativeLayout) bindings[18];
         this.rlReply = (android.widget.RelativeLayout) bindings[10];
         this.svDetails = (android.widget.ScrollView) bindings[13];
         this.tvAbsoluteTime = (android.widget.TextView) bindings[5];
@@ -79,13 +87,14 @@ public class ContentDetailsBinding extends android.databinding.ViewDataBinding  
         this.tvFavoriteCount = (android.widget.TextView) bindings[7];
         this.tvFavoriteCount.setTag(null);
         this.tvNotice = (android.widget.TextView) bindings[15];
-        this.tvRetweet = (android.widget.TextView) bindings[19];
+        this.tvRetweet = (android.widget.TextView) bindings[22];
         this.tvRetweetCount = (android.widget.TextView) bindings[6];
         this.tvRetweetCount.setTag(null);
         this.tvScreenName = (android.widget.TextView) bindings[4];
         this.tvScreenName.setTag(null);
         this.tvUsername = (android.widget.TextView) bindings[3];
         this.tvUsername.setTag(null);
+        this.vvMedia = (com.yqritc.scalablevideoview.ScalableVideoView) bindings[20];
         setRootTag(root);
         // listeners
         invalidateAll();

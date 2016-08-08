@@ -106,14 +106,22 @@
             android:layout_alignParentRight="true"/>
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/item_media_width"
+            android:layout_height="@dimen/item_media_height"
             android:layout_marginTop="@dimen/item_view_padding"
             android:layout_marginBottom="@dimen/item_content_margin"
             android:layout_alignLeft="@+id/tvUsername"
-            android:layout_alignParentRight="true"
             android:layout_below="@id/tvBody"
+            android:scaleType="fitCenter"
             android:id="@+id/ivMedia"
+            android:visibility="gone"/>
+        <com.yqritc.scalablevideoview.ScalableVideoView
+            android:layout_width="@dimen/item_media_width"
+            android:layout_height="@dimen/item_media_height"
+            android:layout_alignLeft="@+id/ivMedia"
+            android:layout_alignTop="@+id/ivMedia"
+            android:id="@+id/vvMedia"
+            app:scalableType="centerCrop"
             android:visibility="gone"/>
 
         <ImageView

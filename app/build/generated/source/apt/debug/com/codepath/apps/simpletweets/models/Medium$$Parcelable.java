@@ -3,6 +3,7 @@ package com.codepath.apps.simpletweets.models;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import android.os.Parcelable;
 import android.os.Parcelable.Creator;
@@ -10,7 +11,7 @@ import org.parceler.Generated;
 import org.parceler.ParcelWrapper;
 import org.parceler.ParcelerRuntimeException;
 
-@Generated(value = "org.parceler.ParcelAnnotationProcessor", date = "2016-08-07T00:06-0500")
+@Generated(value = "org.parceler.ParcelAnnotationProcessor", date = "2016-08-07T19:47-0500")
 @SuppressWarnings({
     "unchecked",
     "deprecation"
@@ -29,10 +30,10 @@ public class Medium$$Parcelable
 
     @Override
     public void writeToParcel(android.os.Parcel parcel$$0, int flags) {
-        write(medium$$0, parcel$$0, flags, new HashSet<java.lang.Integer>());
+        write(medium$$0, parcel$$0, flags, new HashSet<Integer>());
     }
 
-    public static void write(com.codepath.apps.simpletweets.models.Medium medium$$1, android.os.Parcel parcel$$1, int flags$$0, Set<java.lang.Integer> identitySet$$0) {
+    public static void write(com.codepath.apps.simpletweets.models.Medium medium$$1, android.os.Parcel parcel$$1, int flags$$0, Set<Integer> identitySet$$0) {
         int identity$$0 = System.identityHashCode(medium$$1);
         parcel$$1 .writeInt(identity$$0);
         if (!identitySet$$0 .contains(identity$$0)) {
@@ -42,23 +43,11 @@ public class Medium$$Parcelable
             } else {
                 parcel$$1 .writeInt(1);
                 parcel$$1 .writeString(medium$$1 .mediaUrl);
-                if (medium$$1 .videos == null) {
-                    parcel$$1 .writeInt(-1);
-                } else {
-                    parcel$$1 .writeInt(medium$$1 .videos.size());
-                    for (java.util.Map.Entry<java.lang.Integer, java.lang.String> entry$$0 : ((java.util.Map<java.lang.Integer, java.lang.String> ) medium$$1 .videos).entrySet()) {
-                        if (entry$$0 .getKey() == null) {
-                            parcel$$1 .writeInt(-1);
-                        } else {
-                            parcel$$1 .writeInt(1);
-                            parcel$$1 .writeInt(entry$$0 .getKey());
-                        }
-                        parcel$$1 .writeString(entry$$0 .getValue());
-                    }
-                }
                 com.codepath.apps.simpletweets.models.Tweet$$Parcelable.write(medium$$1 .tweet, parcel$$1, flags$$0, identitySet$$0);
+                parcel$$1 .writeString(medium$$1 .video);
                 parcel$$1 .writeString(medium$$1 .type);
                 parcel$$1 .writeString(medium$$1 .url);
+                parcel$$1 .writeDouble(medium$$1 .ratio);
             }
         }
     }
@@ -73,7 +62,7 @@ public class Medium$$Parcelable
         return medium$$0;
     }
 
-    public static com.codepath.apps.simpletweets.models.Medium read(android.os.Parcel parcel$$3, java.util.Map<java.lang.Integer, Object> identityMap$$0) {
+    public static com.codepath.apps.simpletweets.models.Medium read(android.os.Parcel parcel$$3, Map<Integer, Object> identityMap$$0) {
         com.codepath.apps.simpletweets.models.Medium medium$$3;
         int identity$$1 = parcel$$3 .readInt();
         if (identityMap$$0 .containsKey(identity$$1)) {
@@ -92,30 +81,12 @@ public class Medium$$Parcelable
             medium$$5 = new com.codepath.apps.simpletweets.models.Medium();
             identityMap$$0 .put(identity$$1, medium$$5);
             medium$$5 .mediaUrl = parcel$$3 .readString();
-            int int$$0 = parcel$$3 .readInt();
-            HashMap<java.lang.Integer, java.lang.String> map$$0;
-            if (int$$0 < 0) {
-                map$$0 = null;
-            } else {
-                map$$0 = new HashMap<java.lang.Integer, java.lang.String>(int$$0);
-                for (int int$$1 = 0; (int$$1 <int$$0); int$$1 ++) {
-                    int int$$2 = parcel$$3 .readInt();
-                    java.lang.Integer integer$$0;
-                    if (int$$2 < 0) {
-                        integer$$0 = null;
-                    } else {
-                        integer$$0 = parcel$$3 .readInt();
-                    }
-                    java.lang.Integer integer$$1 = integer$$0;
-                    java.lang.String string$$0 = parcel$$3 .readString();
-                    map$$0 .put(integer$$1, string$$0);
-                }
-            }
-            medium$$5 .videos = map$$0;
             Tweet tweet$$0 = com.codepath.apps.simpletweets.models.Tweet$$Parcelable.read(parcel$$3, identityMap$$0);
             medium$$5 .tweet = tweet$$0;
+            medium$$5 .video = parcel$$3 .readString();
             medium$$5 .type = parcel$$3 .readString();
             medium$$5 .url = parcel$$3 .readString();
+            medium$$5 .ratio = parcel$$3 .readDouble();
             medium$$3 = medium$$5;
         }
         return medium$$3;
@@ -128,7 +99,7 @@ public class Medium$$Parcelable
 
         @Override
         public Medium$$Parcelable createFromParcel(android.os.Parcel parcel$$2) {
-            return new Medium$$Parcelable(read(parcel$$2, new HashMap<java.lang.Integer, Object>()));
+            return new Medium$$Parcelable(read(parcel$$2, new HashMap<Integer, Object>()));
         }
 
         @Override

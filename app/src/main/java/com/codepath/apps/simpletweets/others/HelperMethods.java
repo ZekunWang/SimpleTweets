@@ -5,20 +5,24 @@ import com.codepath.apps.simpletweets.activities.TwitterApplication;
 import com.codepath.apps.simpletweets.activities.TwitterClient;
 import com.codepath.apps.simpletweets.models.Tweet;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.yqritc.scalablevideoview.ScalableVideoView;
 
 import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -32,9 +36,7 @@ import java.util.regex.Pattern;
 
 import cz.msebera.android.httpclient.Header;
 
-/**
- * Created by zwang_000 on 7/24/2016.
- */
+
 public class HelperMethods {
 
     public static int getColor(Context context, int id) {
@@ -290,6 +292,61 @@ public class HelperMethods {
                     JSONObject errorResponse) {
                     if (errorResponse != null) {
                         Log.d("DEBUG", "Set Retweet Error: " + errorResponse.toString());
+                    }
+                }
+            });
+        }
+    }
+
+    public static void playVideo(Context context, final ScalableVideoView mVideoView, final ImageView play,  String video) {
+        // Base check
+        if (mVideoView == null || video == null) {
+            return;
+        }
+
+        try {
+            // Insert your Video URL
+            Uri uri = Uri.parse(video);
+            mVideoView.setDataSource(context, uri);
+            mVideoView.setLooping(true);
+            // Listen to preparing video{
+            mVideoView.prepareAsync(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    mVideoView.start();
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Listen to video
+        mVideoView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ScalableVideoView v = (ScalableVideoView)view;
+                if (v.isPlaying()) {
+                    if (play != null) {
+                        play.setVisibility(View.VISIBLE);
+                    }
+                    v.pause();
+                } else {
+                    if (play != null) {
+                        play.setVisibility(View.GONE);
+                    }
+                    v.start();
+                }
+            }
+        });
+
+        // Listen to play button
+        if (play != null) {
+            play.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (!mVideoView.isPlaying()) {
+                        play.setVisibility(View.GONE);
+                        mVideoView.start();
                     }
                 }
             });

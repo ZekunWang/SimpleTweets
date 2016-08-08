@@ -1,9 +1,12 @@
 package com.codepath.apps.simpletweets.listeners;
 
+import com.codepath.apps.simpletweets.activities.TimelineActivity;
+
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 
 public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnScrollListener {
     // The minimum amount of items to have below your current scroll position
@@ -17,6 +20,9 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
     private boolean loading = true;
     // Sets the starting page index
     private int startingPageIndex = 0;
+    // Reset video sign
+    private int aboveResetPosition;
+    private int belowResetPosition;
 
     RecyclerView.LayoutManager mLayoutManager;
 
@@ -90,6 +96,23 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
             currentPage++;
             onLoadMore(currentPage, totalItemCount);
             loading = true;
+        }
+
+        // Refresh invisible item from below
+        if (lastVisibleItemPosition >= 0 && belowResetPosition != lastVisibleItemPosition) {
+            if (belowResetPosition > lastVisibleItemPosition) {
+                TimelineActivity.adapter.notifyItemChanged(belowResetPosition);
+            }
+            belowResetPosition = lastVisibleItemPosition;
+        }
+
+        // Refresh invisible item from above
+        int firstVisiblePosition = ((LinearLayoutManager) mLayoutManager).findFirstVisibleItemPosition();
+        if (aboveResetPosition != firstVisiblePosition) {
+            if (firstVisiblePosition > 0 && aboveResetPosition < firstVisiblePosition) {
+                TimelineActivity.adapter.notifyItemChanged(aboveResetPosition);
+            }
+            aboveResetPosition = firstVisiblePosition;
         }
     }
 

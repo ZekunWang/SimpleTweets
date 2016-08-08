@@ -1,11 +1,14 @@
 package com.codepath.apps.simpletweets.activities;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.BindingAdapter;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -14,14 +17,17 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.TextureView;
 import android.view.View;
 import android.view.ViewStub;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -34,11 +40,19 @@ import com.codepath.apps.simpletweets.models.Tweet;
 import com.codepath.apps.simpletweets.others.HelperMethods;
 import com.codepath.apps.simpletweets.others.PatternEditableBuilder;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.volokh.danylo.video_player_manager.manager.PlayerItemChangeListener;
+import com.volokh.danylo.video_player_manager.manager.SingleVideoPlayerManager;
+import com.volokh.danylo.video_player_manager.manager.VideoPlayerManager;
+import com.volokh.danylo.video_player_manager.meta.MetaData;
+import com.volokh.danylo.video_player_manager.ui.SimpleMainThreadMediaPlayerListener;
+import com.yqritc.scalablevideoview.ScalableVideoView;
 
 import org.json.JSONObject;
 import org.parceler.Parcels;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import butterknife.BindView;
@@ -105,12 +119,20 @@ public class DetailsActivity extends AppCompatActivity
         // Inflate media
         List<Medium> media = targetTweet.getMedia();
         if (media != null) {
-            if (media.size() == 1) {
+            if (media.size() != 0) {
+                // Get image
                 subBinding.ivMedia.setVisibility(View.VISIBLE);
                 Glide.with(this)
                     .load(media.get(0).getMediaUrl())
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(subBinding.ivMedia);
+                // Get video
+                final String videos = media.get(0).getVideos();
+                if (videos != null) {
+                    subBinding.vvMedia.setVisibility(View.VISIBLE);
+                    // Play video
+                    HelperMethods.playVideo(this, subBinding.vvMedia, subBinding.ivButtonImage, videos);
+                }
             }
         }
 

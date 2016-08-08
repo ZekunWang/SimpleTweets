@@ -17,9 +17,9 @@ import java.lang.Override;
 public class TimelineActivity_ViewBinding<T extends TimelineActivity> implements Unbinder {
   protected T target;
 
-  private View view2131427441;
+  private View view2131427465;
 
-  private View view2131427445;
+  private View view2131427469;
 
   public TimelineActivity_ViewBinding(final T target, Finder finder, Object source) {
     this.target = target;
@@ -27,7 +27,7 @@ public class TimelineActivity_ViewBinding<T extends TimelineActivity> implements
     View view;
     view = finder.findRequiredView(source, R.id.toolbar, "field 'toolbar' and method 'onClick'");
     target.toolbar = finder.castView(view, R.id.toolbar, "field 'toolbar'", Toolbar.class);
-    view2131427441 = view;
+    view2131427465 = view;
     view.setOnClickListener(new DebouncingOnClickListener() {
       @Override
       public void doClick(View p0) {
@@ -38,7 +38,7 @@ public class TimelineActivity_ViewBinding<T extends TimelineActivity> implements
     target.swipeContainer = finder.findRequiredViewAsType(source, R.id.swipeContainer, "field 'swipeContainer'", SwipeRefreshLayout.class);
     view = finder.findRequiredView(source, R.id.fab, "field 'fab' and method 'onClick'");
     target.fab = finder.castView(view, R.id.fab, "field 'fab'", FloatingActionButton.class);
-    view2131427445 = view;
+    view2131427469 = view;
     view.setOnClickListener(new DebouncingOnClickListener() {
       @Override
       public void doClick(View p0) {
@@ -57,10 +57,10 @@ public class TimelineActivity_ViewBinding<T extends TimelineActivity> implements
     target.swipeContainer = null;
     target.fab = null;
 
-    view2131427441.setOnClickListener(null);
-    view2131427441 = null;
-    view2131427445.setOnClickListener(null);
-    view2131427445 = null;
+    view2131427465.setOnClickListener(null);
+    view2131427465 = null;
+    view2131427469.setOnClickListener(null);
+    view2131427469 = null;
 
     this.target = null;
   }

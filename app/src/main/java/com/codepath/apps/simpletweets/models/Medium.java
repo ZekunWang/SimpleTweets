@@ -28,7 +28,8 @@ public class Medium extends Model {
     public String url;
     @Column(name="tweet", onUpdate = Column.ForeignKeyAction.CASCADE, onDelete = Column.ForeignKeyAction.CASCADE)
     public Tweet tweet;
-    public Map<Integer, String> videos;
+    public String video;
+    public double ratio;
 
     public Medium() {
         super();
@@ -50,8 +51,12 @@ public class Medium extends Model {
         return mediaUrl;
     }
 
-    public Map<Integer, String> getVedios() {
-        return videos;
+    public String getVideos() {
+        return video;
+    }
+
+    public double getRatio() {
+        return ratio;
     }
 
     // Finds existing user based on row id of the tweet or creates new medium and returns
@@ -83,12 +88,16 @@ public class Medium extends Model {
             medium.url = jsonObject.getString("url");
             medium.tweet = tweet;
             if (jsonObject.has("video_info")) {
-                medium.videos = new HashMap<>();
+                // Calculate ratio
+                JSONArray rat = jsonObject.getJSONObject("video_info").getJSONArray("aspect_ratio");
+                medium.ratio = rat.getDouble(0) / rat.getDouble(1);
+                // Get video link
                 JSONArray variants = jsonObject.getJSONObject("video_info").getJSONArray("variants");
                 for (int i = 0; i < variants.length(); i++) {
                     JSONObject v = variants.getJSONObject(i);
-                    if (v.has("bitrate")) {
-                        medium.videos.put(v.getInt("bitrate"), v.getString("url"));
+                    if (v.has("bitrate") && v.getInt("bitrate") < 832000) {
+                        medium.video = v.getString("url");
+                        break;  // pick one link for simplicity
                     }
                 }
             }

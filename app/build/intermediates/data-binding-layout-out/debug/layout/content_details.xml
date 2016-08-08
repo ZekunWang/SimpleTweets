@@ -164,13 +164,33 @@
                     android:autoLink="all"
                     android:textColorLink="@color/primary"
                     android:layout_below="@+id/ivProfile"/>
-                <ImageView
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/item_view_padding"
                     android:layout_below="@id/tvBody"
-                    android:id="@+id/ivMedia"
-                    android:visibility="gone"/>
+                    android:id="@+id/rlMedia">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/ivMedia"/>
+
+                    <com.yqritc.scalablevideoview.ScalableVideoView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignTop="@+id/ivMedia"
+                        android:layout_alignBottom="@+id/ivMedia"
+                        android:id="@+id/vvMedia"
+                        app:scalableType="fitCenter"/>
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:id="@+id/ivButtonImage"
+                        android:src="@drawable/ic_play_button"
+                        android:visibility="gone"/>
+                </RelativeLayout>
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/details_icon_height"
@@ -179,7 +199,7 @@
                     tools:text="2:41 PM  01 Aug 16"
                     android:tag="binding_5"                 
                     android:background="@drawable/item_view_background"
-                    android:layout_below="@+id/ivMedia"
+                    android:layout_below="@+id/rlMedia"
                     android:textColor="@color/item_text_relative_time"
                     android:textSize="@dimen/item_text_relative_time"/>
 

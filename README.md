@@ -32,7 +32,7 @@ The following **optional** features are implemented:
 The following **bonus** features are implemented:
 
 * [x] User can see embedded image medium within the tweet detail view
-* [ ] User can watch embedded video within the tweet
+* [x] User can watch embedded video within the tweet
 * [x] Compose tweet functionality is build using modal overlay
 * [x] Use Parcelable instead of Serializable using the popular [Parceler library](http://guides.codepath.com/android/Using-Parceler).
 * [x] Apply the popular [Butterknife annotation library](http://guides.codepath.com/android/Reducing-View-Boilerplate-with-Butterknife) to reduce view boilerplate.
@@ -52,12 +52,14 @@ The following **additional** features are implemented:
 * [x] Click to post retweet
 * [x] Multiple reply trigger options
 * [x] Click to share link
+* [x] Show embedded image within the tweet
+* [x] Show embedded video in details activity
 
 ## Video Walkthrough
 
 Here's a walkthrough of implemented user stories:
 
-![Video Walkthrough](SimpleTweets_v3.gif)
+![Video Walkthrough](SimpleTweets_v4.gif)
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
@@ -69,6 +71,8 @@ Describe any challenges encountered while building the app:
 2. Implement Spans and links among Tweet content
 3. Implement Floating Action Bar and react to scrolling
 4. Utilize data binding
+5. Show videos within Tweets
+6. Interact with Twitter API
 
 ## Open-source libraries used
 

@@ -42,7 +42,7 @@ public class TimelineActivity extends AppCompatActivity
 
     private TwitterClient client;
     private List<Tweet> tweets;
-    private ContactsAdapter adapter;
+    public static ContactsAdapter adapter;
     LinearLayoutManager mLinearLayoutManager;
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.rvTweets) RecyclerView rvTweets;
